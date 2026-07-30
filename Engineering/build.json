@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "toolingRepository": "RimWorld-Tooling",
+  "resolver": "Resolve-RwtEnvironment",
+  "purpose": "Compile",
+  "rimWorldVersion": "1.6",
+  "project": "Source/Mod.csproj",
+  "configuration": "Release",
+  "assemblyName": "SOS2WeaponReadouts",
+  "packageId": "CoolNether123.SOS2WeaponReadouts",
+  "dependencies": [
+    "harmony",
+    "spine",
+    "vehicle-framework",
+    "save-our-ship-2"
+  ]
+}

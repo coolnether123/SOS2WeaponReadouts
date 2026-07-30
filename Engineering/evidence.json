@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "packageId": "CoolNether123.SOS2WeaponReadouts",
+  "rimWorldVersion": "1.6",
+  "profilerMode": "absent",
+  "requiredProvenance": [
+    "versionManifestSha256",
+    "gameAssemblySha256",
+    "sourceCommit",
+    "modAssemblySha256",
+    "activeMods",
+    "logSha256"
+  ]
+}
