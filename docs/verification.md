@@ -55,6 +55,26 @@ Test-RwtPackage `
   -ExpectedAssemblyName SOS2WeaponReadouts
 ```
 
+The final distributable was then staged through the shared allowlist-based
+release command:
+
+```powershell
+New-RwtReleasePackage `
+  -ModRoot A:\Dev\RimWorld\Mods\SOS2WeaponReadouts `
+  -DestinationRoot A:\Dev\RimWorld\Releases\1.6\2026-07-30-program-final\SOS2WeaponReadouts `
+  -Version 1.6 `
+  -IncludePath About,1.6,Languages `
+  -ExpectedAssemblyName SOS2WeaponReadouts
+```
+
+Final result: `RWT-BUILD-RELEASE-PACKAGE-VALID`. The staged folder contains
+exactly three files: the production DLL, `About.xml`, and English keyed
+translations. `Developer`, `Source`, `Tests`, `docs`, `Engineering`, and
+`AGENTS.md` are absent. The complete five-mod release manifest is
+`A:\Dev\RimWorld\Releases\1.6\2026-07-30-program-final\release-manifest.json`
+with SHA-256
+`36CED4B8409E64BEC1BFADA792067DD3A3DC9411FE8385D5D1E3D0CAC69B8C2B`.
+
 ## Controlled RimWorld 1.6 evidence
 
 ### Real SOS2 firing proof

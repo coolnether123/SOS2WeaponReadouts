@@ -11,6 +11,41 @@
     "captureSha256": "843852915DC7C48BC7CA5C12B3D306827E29023953E984F45BA39D901F0B4320",
     "cleanup": "cacheRemoved=True; shipsRemaining=0; cleanupErrors=0"
   },
+  "releasePackage": {
+    "result": "RWT-BUILD-RELEASE-PACKAGE-VALID",
+    "packagedSourceCommit": "160f96424feeddede7c2c86ca4b9ec46db8783f1",
+    "toolingCommit": "d9891b426270205577e44c25dd4d67d46af5c022",
+    "manifestPath": "A:\\Dev\\RimWorld\\Releases\\1.6\\2026-07-30-program-final\\release-manifest.json",
+    "manifestSha256": "36CED4B8409E64BEC1BFADA792067DD3A3DC9411FE8385D5D1E3D0CAC69B8C2B",
+    "destinationRoot": "A:\\Dev\\RimWorld\\Releases\\1.6\\2026-07-30-program-final\\SOS2WeaponReadouts",
+    "includedPaths": [
+      "About",
+      "1.6",
+      "Languages"
+    ],
+    "excludedPathsAbsent": [
+      "Developer",
+      "Source",
+      "Tests",
+      "docs",
+      "Engineering",
+      "AGENTS.md"
+    ],
+    "shippingFiles": [
+      {
+        "path": "1.6\\Assemblies\\SOS2WeaponReadouts.dll",
+        "sha256": "7C8295D45273CBCDC8C44183DD9016FDEB2AAF307D3D083823E706310AF1D971"
+      },
+      {
+        "path": "About\\About.xml",
+        "sha256": "2B9AB340380361065ACEA24689ED5B4033703090A4351CD8C145CC6F318BA656"
+      },
+      {
+        "path": "Languages\\English\\Keyed\\SOS2WeaponReadouts.xml",
+        "sha256": "FEB9F237F878822D12B9EA7AB6557C08823E44DB466AB6E420D0684A63EE84B3"
+      }
+    ]
+  },
   "requiredProvenance": [
     "versionManifestSha256",
     "gameAssemblySha256",
