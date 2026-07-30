@@ -23,6 +23,17 @@ save data.
 - Spine
 - Save Our Ship 2 and its required Vehicle Framework dependency
 
+## Installation
+
+Spine does not yet have a public Workshop or download URL, so this verified
+build is distributed in the local collection at
+`A:\Dev\RimWorld\Releases\1.6\2026-07-30-program-final`. Copy
+`SOS2WeaponReadouts` and `Spine` into RimWorld's `Mods` directory, install
+Harmony, Vehicle Framework, and Save Our Ship 2 from their normal sources, and
+enable the dependencies before SOS2 Weapon Readouts. No other gameplay mod in
+the collection is required. The repository's `Developer` fixture is never
+part of the distributed folder.
+
 The mod is safe to add to or remove from an existing save because it stores
 only global UI preferences and does not add game-state objects.
 
