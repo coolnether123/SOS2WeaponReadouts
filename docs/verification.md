@@ -71,9 +71,11 @@ Final result: `RWT-BUILD-RELEASE-PACKAGE-VALID`. The staged folder contains
 exactly three files: the production DLL, `About.xml`, and English keyed
 translations. `Developer`, `Source`, `Tests`, `docs`, `Engineering`, and
 `AGENTS.md` are absent. The complete five-mod release manifest is
-`A:\Dev\RimWorld\Releases\1.6\2026-07-30-program-final\release-manifest.json`
-with SHA-256
-`1CC7DC5FB8C9EB2595C7105CA2F910D752475001DF5ECE687EB77891572FB125`.
+`A:\Dev\RimWorld\Releases\1.6\2026-07-30-program-final\release-manifest.json`.
+Its current SHA-256 is recorded in the generalized tooling status at
+`A:\Dev\RimWorld\Worktrees\RimWorld-Tooling\phase-a\docs\verification\phase-a-status.json`;
+the central record avoids a self-referential documentation commit changing the
+source HEAD after packaging.
 
 ## Controlled RimWorld 1.6 evidence
 
