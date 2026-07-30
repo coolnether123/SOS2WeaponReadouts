@@ -1,21 +1,23 @@
 using UnityEngine;
 using Verse;
-using SOS2WeaponReadouts.Compatibility;
-using SOS2WeaponReadouts.Patches;
 using SOS2WeaponReadouts.Settings;
+using SOS2WeaponReadouts.Runtime;
+using Spine.UI.WidgetExtensions;
 
 namespace SOS2WeaponReadouts.Bootstrap
 {
     public sealed class SOS2WeaponReadoutsMod : Mod
     {
-        private readonly SOS2WeaponReadoutsSettings settings;
+        public static SOS2WeaponReadoutsMod Instance { get; private set; }
+
+        public SOS2WeaponReadoutsSettings Settings { get; }
 
         public SOS2WeaponReadoutsMod(ModContentPack content)
             : base(content)
         {
-            settings = GetSettings<SOS2WeaponReadoutsSettings>();
-            CompatibilityRegistry.InitializeAll();
-            PatchInstaller.InstallAll();
+            Instance = this;
+            Settings = GetSettings<SOS2WeaponReadoutsSettings>();
+            WeaponReadoutRuntime.Initialize(content);
         }
 
         public override string SettingsCategory()
@@ -27,10 +29,40 @@ namespace SOS2WeaponReadouts.Bootstrap
         {
             var listing = new Listing_Standard();
             listing.Begin(inRect);
+            RimworldSettingsWidgets.SectionHeader(
+                listing,
+                "SOS2WR.Settings.General".Translate());
             listing.CheckboxLabeled(
-                "Feature enabled",
-                ref settings.FeatureEnabled);
+                "SOS2WR.Settings.Enabled".Translate(),
+                ref Settings.FeatureEnabled,
+                "SOS2WR.Settings.Enabled.Tooltip".Translate());
+            listing.CheckboxLabeled(
+                "SOS2WR.Settings.Descriptions".Translate(),
+                ref Settings.ShowInDescriptions);
+            listing.CheckboxLabeled(
+                "SOS2WR.Settings.Inspect".Translate(),
+                ref Settings.ShowInInspectPane);
+            listing.CheckboxLabeled(
+                "SOS2WR.Settings.Electrical".Translate(),
+                ref Settings.ShowElectricalDraw);
+            listing.CheckboxLabeled(
+                "SOS2WR.Settings.Network".Translate(),
+                ref Settings.ShowNetworkComparison);
+            listing.CheckboxLabeled(
+                "SOS2WR.Settings.Placement".Translate(),
+                ref Settings.ShowPlacementWarnings);
+
+            RimworldSettingsWidgets.SectionHeader(
+                listing,
+                "SOS2WR.Settings.Compatibility".Translate());
+            listing.Label(WeaponReadoutRuntime.CompatibilitySummary);
             listing.End();
+        }
+
+        public override void WriteSettings()
+        {
+            base.WriteSettings();
+            WeaponReadoutRuntime.NotifySettingsChanged();
         }
     }
 }

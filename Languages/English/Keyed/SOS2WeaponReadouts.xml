@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LanguageData>
+  <SOS2WR.Settings.General>Display</SOS2WR.Settings.General>
+  <SOS2WR.Settings.Enabled>Enable SOS2 weapon readouts</SOS2WR.Settings.Enabled>
+  <SOS2WR.Settings.Enabled.Tooltip>Disables all UI additions without changing any weapon or save data.</SOS2WR.Settings.Enabled.Tooltip>
+  <SOS2WR.Settings.Descriptions>Show costs in weapon descriptions</SOS2WR.Settings.Descriptions>
+  <SOS2WR.Settings.Inspect>Show missing costs in the inspect pane</SOS2WR.Settings.Inspect>
+  <SOS2WR.Settings.Electrical>Show electrical draw</SOS2WR.Settings.Electrical>
+  <SOS2WR.Settings.Network>Show post-shot thermal capacity comparison</SOS2WR.Settings.Network>
+  <SOS2WR.Settings.Placement>Show placement readouts and warnings</SOS2WR.Settings.Placement>
+  <SOS2WR.Settings.Compatibility>Compatibility</SOS2WR.Settings.Compatibility>
+
+  <SOS2WR.Readout.Section>SOS2 weapon costs</SOS2WR.Readout.Section>
+  <SOS2WR.Readout.HeatPerShot>Heat generated per shot</SOS2WR.Readout.HeatPerShot>
+  <SOS2WR.Readout.ElectricalDraw>Electrical draw per shot</SOS2WR.Readout.ElectricalDraw>
+  <SOS2WR.Readout.ValuesUnavailable>Per-shot costs are unavailable until the spinal weapon's amplifier chain is resolved.</SOS2WR.Readout.ValuesUnavailable>
+  <SOS2WR.Readout.HeatAfterShot>Network heat after shot</SOS2WR.Readout.HeatAfterShot>
+  <SOS2WR.Warning.ThermalDisconnected>Not connected to a thermal network.</SOS2WR.Warning.ThermalDisconnected>
+  <SOS2WR.Warning.BridgeDisconnected>Thermal network has no ship bridge, tactical console, or AI core.</SOS2WR.Warning.BridgeDisconnected>
+  <SOS2WR.Warning.HeatInsufficient>Insufficient thermal capacity for one shot.</SOS2WR.Warning.HeatInsufficient>
+</LanguageData>

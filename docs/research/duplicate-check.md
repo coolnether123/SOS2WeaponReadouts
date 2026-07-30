@@ -1,9 +1,10 @@
 # Duplicate check
 
-Checked 2026-07-30 against current Steam Workshop, GitHub, SOS2 source, and
-weapon/heat/energy/network synonyms. No maintained equivalent supplies the
-full per-weapon heat and pulse readout, connection/capacity comparison, and
-placement-warning scope. No verified public original Discord author was found.
+Checked 2026-07-30 against the current Steam Workshop, GitHub, SOS2 source,
+and weapon/heat/energy/network synonyms. No maintained equivalent supplies the
+full per-weapon heat and electrical-draw readout, connection/capacity
+comparison, and placement-warning scope. No verified public original Discord
+author was found.
 
 Closest adjacent projects:
 
@@ -15,10 +16,12 @@ Closest adjacent projects:
 - [WeaponStats](https://steamcommunity.com/sharedfiles/filedetails/?id=974066449)
   does not expose SOS2 network costs or warnings.
 
-Current SOS2 already reports some stored-heat/network and energy-needed text.
-The implementation must detect that output and add only missing values.
+Current SOS2 already reports stored heat/network state and electrical energy
+needed in the inspect pane. This mod treats that output as authoritative and
+adds only fields that remain absent.
 
-Decision: proceed with deduplication against current SOS2 UI.
+Decision: proceed with semantic deduplication against current and future SOS2
+UI output.
 
 API source: [Bqr1s/SaveOurShip2 stable](https://github.com/Bqr1s/SaveOurShip2/tree/stable),
 locally pinned at commit `296ba9a2bec124981cff46e557a07934702a210b`.

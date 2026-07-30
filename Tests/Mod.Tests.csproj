@@ -7,9 +7,15 @@
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="..\Source\Compatibility\CompatibilityRegistry.cs"
-             Link="CompatibilityRegistry.cs" />
-    <Compile Include="..\Source\Domain\FeatureState.cs"
-             Link="FeatureState.cs" />
+    <Compile Include="..\Source\Domain\WeaponReadout.cs"
+             Link="Domain\WeaponReadout.cs" />
+    <Compile Include="..\Source\Domain\ShotCostCalculator.cs"
+             Link="Domain\ShotCostCalculator.cs" />
+    <Compile Include="..\Source\Domain\ReadoutPresentation.cs"
+             Link="Domain\ReadoutPresentation.cs" />
+    <Compile Include="..\Source\Domain\ExistingReadoutDetector.cs"
+             Link="Domain\ExistingReadoutDetector.cs" />
+    <Compile Include="..\Source\Domain\ReadoutFormatter.cs"
+             Link="Domain\ReadoutFormatter.cs" />
   </ItemGroup>
 </Project>

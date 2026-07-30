@@ -1,0 +1,49 @@
+# Architecture
+
+## Boundaries
+
+`Compatibility/ISos2WeaponAdapter.cs` is the only contract through which the
+rest of the mod asks SOS2 questions. `Sos2V16Adapter` validates and caches the
+public 1.6 API members at startup, then returns immutable domain models. SOS2
+types and source are never copied or exposed outside this adapter.
+
+The compiled assembly deliberately has no static reference to
+`ShipsHaveInsides.dll`. This lets the normal mod assembly load even when SOS2
+is missing or incompatible, after which the adapter reports one controlled
+compatibility message and disables integration.
+
+`Domain/` owns the SOS2 firing formula, immutable readout values, semantic
+duplicate detection, number formatting, and line composition. These classes
+are pure C# and covered by the standalone test executable.
+
+`Runtime/WeaponReadoutRuntime.cs` coordinates settings, adapter calls,
+localization, and error isolation. Every runtime entry point is demand-driven:
+definition stats are evaluated when an info card enumerates them, inspect
+values are evaluated while the weapon is inspected, and placement values are
+evaluated only while its designator is active. No map, world, or per-frame
+component runs while the UI is closed.
+
+`Patches/` contains two narrow Harmony postfixes:
+
+- `ThingDef.SpecialDisplayStats` appends one weapon-stat row only for
+  definitions accepted by the SOS2 adapter.
+- SOS2 `Building_ShipTurret.GetInspectString` appends missing built-weapon
+  values.
+
+`UI/WeaponReadoutPlaceWorker.cs` is attached only to SOS2 weapon definitions
+after definition loading. It draws information but never rejects placement.
+Settings use Spine's shared settings widgets instead of another framework.
+
+## Dependency direction
+
+UI and patches → runtime → adapter interface/domain. The reflection-backed SOS2
+adapter depends on the domain but no domain type depends on RimWorld, Harmony,
+SOS2, or Vehicle Framework.
+
+## One-caller helpers
+
+Private reflection readers inside `Sos2V16Adapter` have one or a few callers
+because they isolate unsafe API-boundary conversion in the adapter. They
+should remain local until a second compatibility adapter needs the same
+operation; promoting them to shared infrastructure now would create a
+speculative abstraction.

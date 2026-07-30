@@ -1,0 +1,41 @@
+using SOS2WeaponReadouts.Domain;
+using Verse;
+
+namespace SOS2WeaponReadouts.UI
+{
+    public static class ReadoutLocalizer
+    {
+        public static ReadoutLabels CreateLabels(
+            WeaponReadout readout)
+        {
+            return new ReadoutLabels
+            {
+                Section = "SOS2WR.Readout.Section".Translate(),
+                HeatPerShot =
+                    "SOS2WR.Readout.HeatPerShot".Translate(),
+                ElectricalDrawPerShot =
+                    "SOS2WR.Readout.ElectricalDraw".Translate(),
+                ValuesUnavailable =
+                    "SOS2WR.Readout.ValuesUnavailable".Translate(),
+                ThermalDisconnected =
+                    "SOS2WR.Warning.ThermalDisconnected".Translate(),
+                BridgeDisconnected =
+                    "SOS2WR.Warning.BridgeDisconnected".Translate(),
+                HeatAfterShot =
+                    "SOS2WR.Readout.HeatAfterShot".Translate(),
+                HeatInsufficient =
+                    "SOS2WR.Warning.HeatInsufficient".Translate(),
+                ExistingElectricalLine =
+                    "SoS.HeatTurretEnergy".Translate(
+                        readout.ElectricalDrawPerShot
+                            .ToStringDecimalIfSmall()),
+                ExistingThermalDisconnected =
+                    "SoS.HeatNotConnected".Translate(),
+                ExistingBridgeDisconnected =
+                    "SoS.TurretNotConnected".Translate(),
+                HeatUnits = "HU",
+                ElectricalUnits = "Wd"
+            };
+        }
+    }
+}
