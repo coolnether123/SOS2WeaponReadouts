@@ -13,14 +13,14 @@
   },
   "releasePackage": {
     "result": "RWT-BUILD-RELEASE-PACKAGE-VALID",
-    "packagedSourceCommit": "160f96424feeddede7c2c86ca4b9ec46db8783f1",
-    "toolingCommit": "d9891b426270205577e44c25dd4d67d46af5c022",
+    "packagedSourceCommit": "35dfa91bf14a2ad9b293eb9e4cdde2c2a84d57e8",
+    "toolingCommit": "af5c9ee31a1b934a3f2d655d3d65af2427ada251",
     "manifestPath": "A:\\Dev\\RimWorld\\Releases\\1.6\\2026-07-30-program-final\\release-manifest.json",
-    "manifestSha256": "36CED4B8409E64BEC1BFADA792067DD3A3DC9411FE8385D5D1E3D0CAC69B8C2B",
+    "manifestSha256": "1CC7DC5FB8C9EB2595C7105CA2F910D752475001DF5ECE687EB77891572FB125",
     "destinationRoot": "A:\\Dev\\RimWorld\\Releases\\1.6\\2026-07-30-program-final\\SOS2WeaponReadouts",
     "includedPaths": [
       "About",
-      "1.6",
+      "1.6\\Assemblies\\SOS2WeaponReadouts.dll",
       "Languages"
     ],
     "excludedPathsAbsent": [

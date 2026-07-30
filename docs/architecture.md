@@ -41,10 +41,11 @@ assembly. It is loaded only when an agent passes its root through the harness
 `-AdditionalModPaths` option. It constructs and removes real SOS2 game objects,
 observes firing calls, and writes proof artifacts. The production mod has no
 reference to RimWorld Agent or the fixture. The shared
-`New-RwtReleasePackage` command stages only the explicit `About`, `1.6`, and
-`Languages` runtime allowlist. That mechanically excludes the entire
-`Developer/` tree, along with source, tests, and engineering evidence, from
-the distributable folder.
+`New-RwtReleasePackage` command stages only the explicit `About`,
+`1.6/Assemblies/SOS2WeaponReadouts.dll`, and `Languages` runtime allowlist.
+That mechanically excludes the entire `Developer/` tree, along with source,
+tests, engineering evidence, build logs, symbol files, and nested build
+outputs, from the distributable folder.
 
 The fixture advances from `IRimWorldAgentExtension.OnFrame` because SOS2
 rebuilds heat grids in its frame-driven `ShipMapComp.MapComponentUpdate`.

@@ -63,7 +63,7 @@ New-RwtReleasePackage `
   -ModRoot A:\Dev\RimWorld\Mods\SOS2WeaponReadouts `
   -DestinationRoot A:\Dev\RimWorld\Releases\1.6\2026-07-30-program-final\SOS2WeaponReadouts `
   -Version 1.6 `
-  -IncludePath About,1.6,Languages `
+  -IncludePath About,1.6\Assemblies\SOS2WeaponReadouts.dll,Languages `
   -ExpectedAssemblyName SOS2WeaponReadouts
 ```
 
@@ -73,7 +73,7 @@ translations. `Developer`, `Source`, `Tests`, `docs`, `Engineering`, and
 `AGENTS.md` are absent. The complete five-mod release manifest is
 `A:\Dev\RimWorld\Releases\1.6\2026-07-30-program-final\release-manifest.json`
 with SHA-256
-`36CED4B8409E64BEC1BFADA792067DD3A3DC9411FE8385D5D1E3D0CAC69B8C2B`.
+`1CC7DC5FB8C9EB2595C7105CA2F910D752475001DF5ECE687EB77891572FB125`.
 
 ## Controlled RimWorld 1.6 evidence
 
