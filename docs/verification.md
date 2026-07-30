@@ -15,7 +15,10 @@ bridge states, post-shot capacity, insufficient capacity, unresolved spinal
 values, display toggles, deterministic number formatting, and the regression
 where separate SOS2 grid-heat and energy lines must not hide heat per shot.
 
-Final result: `PASS: 13 SOS2 weapon readout contracts`.
+The fixture proof evaluator also covers successful launch evidence, exact
+resource deltas, suppressed-fire behavior, and resource-mismatch rejection.
+
+Final result: `PASS: 16 SOS2 weapon readout contracts`.
 
 ## Pinned SOS2 API contract
 
@@ -53,6 +56,53 @@ Test-RwtPackage `
 ```
 
 ## Controlled RimWorld 1.6 evidence
+
+### Real SOS2 firing proof
+
+Final isolated lane
+`SOS2WeaponReadouts-99829488b1ac4ba28cc0b8c334081434` loaded the production
+mod plus the separate developer fixture. The fixture built a valid 150-cell
+SOS2 hull with a computer core, connected laser, heat sink, capacitor, and a
+separate thermally disconnected laser network.
+
+- Connected fire observed one `Building_ShipTurret.BeginBurst`, one
+  `Verb_LaunchProjectileShip.TryCastShot`, and one actual
+  `Projectile.Launch` of `Bullet_Ground_Laser`.
+- Heat changed from `0` to `30 HU`; stored power changed from `999.894` to
+  `919.894 Wd`, exactly matching the weapon's `30 HU / 80 Wd` firing costs.
+- The production inspect readout showed those same per-shot values and the
+  real network's post-shot comparison.
+- With only `78.925 Wd` available, the turret entered `BeginBurst` but produced
+  zero casts, zero projectile launches, zero heat increase, and zero
+  weapon-scale power draw.
+- The disconnected turret produced zero bursts, casts, launches, or heat and
+  reported the missing bridge/core state.
+- Cleanup reported
+  `removed=157; cacheRemoved=True; shipsRemaining=0; cleanupErrors=0`.
+  No `Ship was detached from bridge` warning was emitted, and post-cleanup
+  map inspection found zero laser turrets and zero hull tiles.
+- A clean save/load completed at load generation 1, stayed paused, contained
+  no fixture turret, and reset fixture status for the loaded map.
+- A post-cleanup 600-tick sample completed in `0.207521` seconds
+  (`2891.27 ticks/second`).
+
+The firing artifact is
+`C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-99829488b1ac4ba28cc0b8c334081434\ipc\evidence\sos2wr\firing-proof.txt`
+with SHA-256
+`C240520A0D50EA232C1A24B00EEC783EBCCE0EC5C817E1C3CD56D92FE2C1A735`.
+The selected-turret information-card capture is
+`C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-99829488b1ac4ba28cc0b8c334081434\ipc\captures\sos2wr-final-real-fire-info-20260730-221554-448.png`
+with SHA-256
+`843852915DC7C48BC7CA5C12B3D306827E29023953E984F45BA39D901F0B4320`.
+The lane stopped normally with exit code 0 and no forced termination.
+
+Production-only removal lane
+`SOS2WeaponReadouts-bc3ed2fdd65b4f7c9451bc2bea1b7df0` omitted the fixture
+path. Its active-mod list contained SOS2 Weapon Readouts but not the test
+fixture, the `mod-fixtures` category was empty, and invoking
+`sos2wr-firing-fixture` returned `unknown tool`. This confirms the fixture is
+not discoverable in an ordinary production profile. The lane stopped normally
+with exit code 0 and no forced termination.
 
 The committed DLL was re-exercised in isolated harness lane
 `SOS2WeaponReadouts-8049c41a740e4c23b16768b59d3be015`. The lane stopped with
@@ -110,16 +160,10 @@ test.
 
 ## Review limitations
 
-- Actual weapon firing was not exercised. A valid firing fixture would require
-  a constructed ship, power network, heat network, bridge/tactical control,
-  and target orchestration that the generalized harness does not currently
-  provide. The firing formula is instead tied to SOS2's public
-  `HeatToFire`/`EnergyToFire` properties, traced through `BeginBurst`, checked
-  against the pinned assembly, and covered by pure base/amplified contracts.
 - The insufficient-capacity formatter branch is covered by a pure contract.
-  Runtime evidence shows the underlying real SOS2 capacity transition from
-  0 HU to 200 HU, but the harness cannot scroll the inspect pane far enough to
-  capture the appended warning text.
+  Runtime firing evidence exercises SOS2's actual insufficient-power
+  suppression, but the harness does not capture every scroll position of the
+  inspect pane.
 - Missing SOS2 is prevented by the declared required dependency. The dormant
   fallback adapter returns no readouts when SOS2 is inactive, and incompatible
   API shape is caught before patch installation. These paths were inspected

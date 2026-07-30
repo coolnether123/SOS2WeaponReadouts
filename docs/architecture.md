@@ -34,6 +34,21 @@ component runs while the UI is closed.
 after definition loading. It draws information but never rejects placement.
 Settings use Spine's shared settings widgets instead of another framework.
 
+## Developer fixture boundary
+
+`Developer/SOS2WeaponReadouts.TestFixture` is a separate RimWorld mod and
+assembly. It is loaded only when an agent passes its root through the harness
+`-AdditionalModPaths` option. It constructs and removes real SOS2 game objects,
+observes firing calls, and writes proof artifacts. The production mod has no
+reference to RimWorld Agent or the fixture, and release packaging excludes the
+entire `Developer/` tree.
+
+The fixture advances from `IRimWorldAgentExtension.OnFrame` because SOS2
+rebuilds heat grids in its frame-driven `ShipMapComp.MapComponentUpdate`.
+Cleanup removes the fixture ship from SOS2's cache before destroying its parts,
+continues through individual teardown errors, recaches, and requires zero ships
+remaining.
+
 ## Dependency direction
 
 UI and patches → runtime → adapter interface/domain. The reflection-backed SOS2
@@ -47,3 +62,8 @@ because they isolate unsafe API-boundary conversion in the adapter. They
 should remain local until a second compatibility adapter needs the same
 operation; promoting them to shared infrastructure now would create a
 speculative abstraction.
+
+`FiringProofEvaluator` is intentionally consumed by only the developer fixture
+and its linked pure tests. It is repository-local test infrastructure, not a
+production abstraction; moving it into the shipping DLL would violate the
+fixture boundary.

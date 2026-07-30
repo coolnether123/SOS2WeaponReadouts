@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using SOS2WeaponReadouts.Domain;
+using SOS2WeaponReadouts.TestFixture.Domain;
 
 namespace SOS2WeaponReadouts.Tests
 {
@@ -53,8 +54,11 @@ namespace SOS2WeaponReadouts.Tests
             TestUnavailableSpinalValues();
             TestPresentationToggles();
             TestNumberFormatting();
+            TestSuccessfulFiringProof();
+            TestSuppressedFiringProof();
+            TestFiringProofRejectsResourceMismatch();
             Console.WriteLine(
-                "PASS: 13 SOS2 weapon readout contracts");
+                "PASS: 16 SOS2 weapon readout contracts");
             return 0;
         }
 
@@ -285,6 +289,52 @@ namespace SOS2WeaponReadouts.Tests
                 "12.35",
                 ReadoutFormatter.FormatNumber(12.345f),
                 "decimal");
+        }
+
+        private static void TestSuccessfulFiringProof()
+        {
+            Equal(
+                string.Empty,
+                FiringProofEvaluator.ValidateSuccessfulFire(
+                    0f,
+                    30f,
+                    1000f,
+                    920f,
+                    30f,
+                    80f,
+                    1,
+                    1,
+                    1),
+                "successful firing proof");
+        }
+
+        private static void TestSuppressedFiringProof()
+        {
+            Equal(
+                string.Empty,
+                FiringProofEvaluator.ValidateSuppressedFire(
+                    30f,
+                    30f,
+                    79f,
+                    79f,
+                    0),
+                "suppressed firing proof");
+        }
+
+        private static void TestFiringProofRejectsResourceMismatch()
+        {
+            Contains(
+                FiringProofEvaluator.ValidateSuccessfulFire(
+                    0f,
+                    29f,
+                    1000f,
+                    920f,
+                    30f,
+                    80f,
+                    1,
+                    1,
+                    1),
+                "Heat delta");
         }
 
         private static void Equal<T>(

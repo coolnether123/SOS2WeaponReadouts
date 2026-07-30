@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>SOS2WeaponReadouts.TestFixture</AssemblyName>
+    <RootNamespace>SOS2WeaponReadouts.TestFixture</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Deterministic>true</Deterministic>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <OutputPath>..\1.6\Assemblies\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldManagedDir)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="0Harmony">
+      <HintPath>$(RwtDependencyHarmony)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="RimWorldAgent">
+      <HintPath>$(RimWorldAgentAssembly)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="SOS2WeaponReadouts">
+      <HintPath>$(SOS2WeaponReadoutsAssembly)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="ShipsHaveInsides">
+      <HintPath>$(RwtDependencySaveOurShip2)</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="Vehicles">
+      <HintPath>$(RwtDependencyVehicleFramework)</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+  <Target Name="RequireResolvedDependencies" BeforeTargets="ResolveReferences">
+    <Error Condition="'$(RwtDependencyHarmony)' == '' or !Exists('$(RwtDependencyHarmony)')" Text="RwtDependencyHarmony is required." />
+    <Error Condition="'$(RimWorldAgentAssembly)' == '' or !Exists('$(RimWorldAgentAssembly)')" Text="RimWorldAgentAssembly is required." />
+    <Error Condition="'$(SOS2WeaponReadoutsAssembly)' == '' or !Exists('$(SOS2WeaponReadoutsAssembly)')" Text="SOS2WeaponReadoutsAssembly is required." />
+    <Error Condition="'$(RwtDependencySaveOurShip2)' == '' or !Exists('$(RwtDependencySaveOurShip2)')" Text="RwtDependencySaveOurShip2 is required." />
+    <Error Condition="'$(RwtDependencyVehicleFramework)' == '' or !Exists('$(RwtDependencyVehicleFramework)')" Text="RwtDependencyVehicleFramework is required." />
+  </Target>
+</Project>

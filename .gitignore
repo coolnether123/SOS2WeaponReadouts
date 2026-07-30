@@ -4,3 +4,4 @@
 *.suo
 *.user
 Engineering/artifacts/
+Developer/**/Assemblies/*.pdb

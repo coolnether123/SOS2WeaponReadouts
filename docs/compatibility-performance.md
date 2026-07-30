@@ -30,3 +30,5 @@ suppressed when already present.
 - The settings window reads status text only while open.
 
 Consequently, the mod adds no work per frame while its UI surfaces are closed.
+The frame-driven developer firing fixture is a separately loaded test mod and
+is not present in production profiles or release packages.

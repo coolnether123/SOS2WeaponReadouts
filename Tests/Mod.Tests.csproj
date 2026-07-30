@@ -17,5 +17,7 @@
              Link="Domain\ExistingReadoutDetector.cs" />
     <Compile Include="..\Source\Domain\ReadoutFormatter.cs"
              Link="Domain\ReadoutFormatter.cs" />
+    <Compile Include="..\Developer\SOS2WeaponReadouts.TestFixture\Source\Domain\FiringProofEvaluator.cs"
+             Link="Domain\FiringProofEvaluator.cs" />
   </ItemGroup>
 </Project>

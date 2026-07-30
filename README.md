@@ -27,4 +27,6 @@ The mod is safe to add to or remove from an existing save because it stores
 only global UI preferences and does not add game-state objects.
 
 See [architecture](docs/architecture.md), [API investigation](docs/research/api-investigation.md),
-and [verification](docs/verification.md) for engineering details.
+[verification](docs/verification.md), and the
+[developer firing fixture](Developer/SOS2WeaponReadouts.TestFixture/README.md)
+for engineering details.

@@ -3,6 +3,14 @@
   "packageId": "CoolNether123.SOS2WeaponReadouts",
   "rimWorldVersion": "1.6",
   "profilerMode": "absent",
+  "developerFixture": {
+    "packageId": "CoolNether123.SOS2WeaponReadouts.TestFixture",
+    "releaseExcluded": true,
+    "finalSession": "SOS2WeaponReadouts-99829488b1ac4ba28cc0b8c334081434",
+    "firingArtifactSha256": "C240520A0D50EA232C1A24B00EEC783EBCCE0EC5C817E1C3CD56D92FE2C1A735",
+    "captureSha256": "843852915DC7C48BC7CA5C12B3D306827E29023953E984F45BA39D901F0B4320",
+    "cleanup": "cacheRemoved=True; shipsRemaining=0; cleanupErrors=0"
+  },
   "requiredProvenance": [
     "versionManifestSha256",
     "gameAssemblySha256",
