@@ -5,6 +5,9 @@
 The supported target is RimWorld 1.6 with the pinned SOS2 stable API. Public
 members are resolved once and cached. Incompatible SOS2 builds disable all
 integration and report one warning rather than causing repeating exceptions.
+Because SOS2 is a declared required dependency, RimWorld normally prevents the
+mod from loading when SOS2 is absent; the unavailable adapter is defensive
+startup behavior rather than the normal missing-dependency user experience.
 
 Current known limitation: Combat Extended's optional SOS2 surrogate turret
 class is not patched. Supporting it safely requires validating CE's separate

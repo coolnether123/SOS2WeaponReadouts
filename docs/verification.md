@@ -54,36 +54,80 @@ Test-RwtPackage `
 
 ## Controlled RimWorld 1.6 evidence
 
-The final hardened DLL was exercised in isolated harness lane
-`SOS2WeaponReadouts-07c64530436b4b9eadb88cb8513325e7`, which stopped cleanly
-with exit code 0 and no forced termination.
+The committed DLL was re-exercised in isolated harness lane
+`SOS2WeaponReadouts-8049c41a740e4c23b16768b59d3be015`. The lane stopped with
+exit code 0 and no forced termination.
+
+After Spine was hardened, final dependency smoke lane
+`SOS2WeaponReadouts-4306cf88364e468faa34f1bce3a4eb6f` staged Spine commit
+`650fb95835d187777fae314e1de361b8991b33ee` and DLL SHA-256
+`2441959E82AA5CAC5C96E7456213B21D1FB67881E314F85F54373A4DB8C0E2AA`.
+It also staged the rebuilt SOS2 Weapon Readouts DLL with SHA-256
+`7C8295D45273CBCDC8C44183DD9016FDEB2AAF307D3D083823E706310AF1D971`.
+The laser card still visibly showed `30 HU / 80 Wd`; the pre-shutdown scan
+again contained no runtime exception beyond the known SOS2 missing-def line.
+This final lane stopped with exit code 0 and no forced termination.
 
 - Active stack: Harmony, RimWorld Agent, Spine, Vehicle Framework, Save Our
   Ship 2, and SOS2 Weapon Readouts.
 - Startup validated SOS2's 1.6 API and attached non-blocking placement
   readouts to 17 SOS2 weapon definitions.
-- The laser information card visibly showed `SOS2 weapon costs: 30 HU / 80 Wd`.
-- A real spawned laser, thermal conduits, 200 HU heatsink, and pilot console
-  formed one SOS2 heat network. The final inspect pane visibly showed
-  `Heat generated per shot: 30 HU`; the preceding run also showed
-  `Network heat after shot: 30 / 200 HU`.
+- Information cards covered three representative SOS2 weapon families:
+  laser `30 HU / 80 Wd`, railgun `15 HU / 60 Wd`, and plasma
+  `45 HU / 50 Wd`. A spinal capacitor, which is not itself a weapon, remained
+  unchanged.
+- A valid fixture used only a real laser, thermal conduit, and heatsink. The
+  connected SOS2 network changed from 0 HU capacity to 200 HU capacity after
+  the heatsink was added. No bridge or pilot console was generic-spawned.
 - SOS2's own `Energy to fire: 80 Wd` remained authoritative and was not
   duplicated.
-- The settings window showed all five enabled display/compatibility controls.
 - A normal save/load round trip completed with load generation 1 and the
   spawned turret persisted.
-- A 600-tick synchronous sample completed in 0.283603 seconds
-  (2115.63 ticks/second). Source inspection confirms no tick/update component
+- A 600-tick synchronous sample completed in 0.265391 seconds
+  (2260.82 ticks/second). Source inspection confirms no tick/update component
   or per-frame Harmony patch.
 
 Captures:
 
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-212bfc208f27495ba2040ccc5865e559\ipc\captures\sos2-laser-info-corrected-20260730-201138-866.png`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-212bfc208f27495ba2040ccc5865e559\ipc\captures\sos2-readout-settings-20260730-201326-536.png`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-212bfc208f27495ba2040ccc5865e559\ipc\captures\sos2-laser-connected-network-rebuilt-20260730-201805-308.png`
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-07c64530436b4b9eadb88cb8513325e7\ipc\captures\sos2-final-hardened-connected-20260730-202558-428.png`
+- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-8049c41a740e4c23b16768b59d3be015\ipc\captures\clean-info-laser-20260730-205454-973.png`
+- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-8049c41a740e4c23b16768b59d3be015\ipc\captures\clean-info-railgun-20260730-205459-037.png`
+- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-8049c41a740e4c23b16768b59d3be015\ipc\captures\clean-info-plasma-20260730-205503-306.png`
+- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-8049c41a740e4c23b16768b59d3be015\ipc\captures\clean-insufficient-capacity-20260730-205658-980.png`
+- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-8049c41a740e4c23b16768b59d3be015\ipc\captures\clean-capacity-transition-20260730-205758-594.png`
+- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-8049c41a740e4c23b16768b59d3be015\ipc\captures\clean-after-load-20260730-205831-184.png`
+- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-4306cf88364e468faa34f1bce3a4eb6f\ipc\captures\final-rebuilt-spine-smoke-laser-ready-20260730-211012-968.png`
 
-One dependency-owned startup error remains:
-`Failed to find Verse.ThingDef named PlantPot_Bonsai`. The reference originates
-inside SOS2; this mod does not suppress or modify dependency errors. The
-previous false Vehicle Framework requirement error is absent.
+The pre-shutdown error/exception scan contains only the dependency-owned
+`Failed to find Verse.ThingDef named PlantPot_Bonsai` startup line. The
+reference originates inside SOS2; this mod does not suppress or modify
+dependency errors. There are no SOS2 Weapon Readouts exceptions, Harmony patch
+failures, or Vehicle Framework requirement errors. RimWorld also reports a
+nonfatal metadata warning because the local-only Spine dependency has no
+public download URL. After orderly shutdown, Vehicle Framework's SmashTools
+worker logs a `ThreadAbortException` while the runtime tears down its
+dedicated thread; it occurs after the harness shutdown request, not during the
+test.
+
+## Review limitations
+
+- Actual weapon firing was not exercised. A valid firing fixture would require
+  a constructed ship, power network, heat network, bridge/tactical control,
+  and target orchestration that the generalized harness does not currently
+  provide. The firing formula is instead tied to SOS2's public
+  `HeatToFire`/`EnergyToFire` properties, traced through `BeginBurst`, checked
+  against the pinned assembly, and covered by pure base/amplified contracts.
+- The insufficient-capacity formatter branch is covered by a pure contract.
+  Runtime evidence shows the underlying real SOS2 capacity transition from
+  0 HU to 200 HU, but the harness cannot scroll the inspect pane far enough to
+  capture the appended warning text.
+- Missing SOS2 is prevented by the declared required dependency. The dormant
+  fallback adapter returns no readouts when SOS2 is inactive, and incompatible
+  API shape is caught before patch installation. These paths were inspected
+  but were not tested by shipping a deliberately missing or corrupted
+  dependency.
+
+An earlier lane,
+`SOS2WeaponReadouts-07c64530436b4b9eadb88cb8513325e7`, is explicitly rejected
+as release evidence. It generic-spawned `ShipPilotSeatMini` without the ship
+state SOS2 requires and produced `Building_ShipBridge.GetInspectString` and
+`Tick` null-reference exceptions. None of its captures support this release.
