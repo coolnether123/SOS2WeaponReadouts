@@ -8,8 +8,10 @@ save data.
 ## Player features
 
 - Exact heat generated per firing cycle in SOS2 heat units (HU).
-- Exact electrical draw per firing cycle in watt-days (Wd).
-- Compact selected-weapon display with current network heat/capacity.
+- Exact electrical draw per firing cycle in descriptions and placement
+  previews where SOS2 does not already show it.
+- Compact selected-weapon display with current network heat/capacity and heat
+  per shot, without repeating SOS2's existing energy-to-fire line.
 - Clear disconnected-network and missing-bridge information.
 - Non-blocking placement readouts and safety warnings.
 - Independent toggles for descriptions, the selected-weapon display, electrical values,

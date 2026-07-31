@@ -10,9 +10,9 @@ namespace SOS2WeaponReadouts.UI
     {
         private const float Width = 210f;
         private const float GizmoHeight = 75f;
-        private const float Padding = 3f;
-        private const float TitleRowHeight = 15f;
-        private const float DataRowHeight = 18f;
+        private const float Padding = 4f;
+        private const float TitleRowHeight = 19f;
+        private const float DataRowHeight = 24f;
 
         private readonly WeaponReadout readout;
         private readonly ReadoutPresentation presentation;
@@ -87,19 +87,6 @@ namespace SOS2WeaponReadouts.UI
                     Color.white,
                     DataRowHeight);
 
-                if (presentation.ShowElectricalDraw)
-                {
-                    DrawRow(
-                        content,
-                        ref y,
-                        labels.ElectricalDrawPerShot + ": " +
-                            ReadoutFormatter.FormatNumber(
-                                readout.ElectricalDrawPerShot) +
-                            " " + labels.ElectricalUnits,
-                        Color.white,
-                        DataRowHeight);
-                }
-
                 TooltipHandler.TipRegion(
                     outer,
                     () => string.Join(
@@ -153,7 +140,12 @@ namespace SOS2WeaponReadouts.UI
             return ReadoutFormatter.BuildMissingLines(
                 string.Empty,
                 readout,
-                presentation,
+                new ReadoutPresentation
+                {
+                    ShowElectricalDraw = false,
+                    ShowNetworkComparison =
+                        presentation.ShowNetworkComparison
+                },
                 labels);
         }
 

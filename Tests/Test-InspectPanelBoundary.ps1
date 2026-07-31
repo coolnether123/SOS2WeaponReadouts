@@ -49,6 +49,18 @@ if ($gizmoSource -notmatch
     $failures.Add(
         'Gizmo data rows must leave at least 18 pixels for font descenders.')
 }
+if ($gizmoSource -match
+    'labels\.ElectricalDrawPerShot|readout\.ElectricalDrawPerShot')
+{
+    $failures.Add(
+        'The selected-weapon gizmo must not repeat SOS2 electrical draw.')
+}
+if ($gizmoSource -notmatch
+    'ShowElectricalDraw\s*=\s*false')
+{
+    $failures.Add(
+        'The selected-weapon tooltip must suppress duplicate electrical draw.')
+}
 if ($runtimeSource -notmatch
     'AppendSelectedWeaponGizmo')
 {
