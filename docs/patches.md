@@ -15,17 +15,20 @@ Risk controls:
 - Existing heat/electrical entries are detected line by line before appending.
 - Exceptions are caught at the runtime boundary and logged once.
 
-## SaveOurShip2.Building_ShipTurret.GetInspectString
+## SaveOurShip2.Building_ShipTurret.GetGizmos
 
-Reason: SOS2's public turret class owns the built-weapon inspect string and
-does not expose an append event. The target is resolved by the validated
-adapter, so an incompatible API prevents patch installation.
+Reason: the standard selected-object gizmo area can show live weapon values
+without lengthening RimWorld's bottom-left inspect panel. The target is
+resolved by the validated adapter, so an incompatible API prevents patch
+installation.
 
 Risk controls:
 
 - Postfix only.
-- SOS2's result remains authoritative.
-- Current SOS2 energy, network, and bridge lines are not duplicated.
+- SOS2's existing gizmos remain authoritative and in their original order.
+- One fixed-width readout gizmo is appended only for a recognized weapon.
+- It reports current network heat/capacity and per-shot costs, never projected
+  after-shot heat.
 - No firing, ticking, power, heat, or placement method is patched.
 
 Placement integration uses RimWorld's standard `PlaceWorker` definition list,

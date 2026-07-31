@@ -8,7 +8,7 @@ namespace SOS2WeaponReadouts.Compatibility
     {
         CompatibilityStatus Status { get; }
 
-        MethodInfo TurretInspectMethod { get; }
+        MethodInfo TurretGizmosMethod { get; }
 
         bool IsWeaponDefinition(ThingDef definition);
 

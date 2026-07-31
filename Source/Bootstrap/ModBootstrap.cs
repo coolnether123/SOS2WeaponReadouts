@@ -41,7 +41,7 @@ namespace SOS2WeaponReadouts.Bootstrap
                 ref Settings.ShowInDescriptions);
             listing.CheckboxLabeled(
                 "SOS2WR.Settings.Inspect".Translate(),
-                ref Settings.ShowInInspectPane);
+                ref Settings.ShowSelectedWeaponReadout);
             listing.CheckboxLabeled(
                 "SOS2WR.Settings.Electrical".Translate(),
                 ref Settings.ShowElectricalDraw);

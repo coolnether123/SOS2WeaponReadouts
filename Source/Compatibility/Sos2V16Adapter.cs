@@ -51,9 +51,9 @@ namespace SOS2WeaponReadouts.Compatibility
             connectedToBridge = RequireProperty(
                 turretType,
                 "ConnectedToBridge");
-            TurretInspectMethod = RequireMethod(
+            TurretGizmosMethod = RequireMethod(
                 turretType,
-                "GetInspectString");
+                "GetGizmos");
 
             heatCompNetwork = RequireField(heatCompType, "myNet");
             heatCompProps = RequireProperty(heatCompType, "Props");
@@ -81,7 +81,7 @@ namespace SOS2WeaponReadouts.Compatibility
 
         public CompatibilityStatus Status { get; }
 
-        public MethodInfo TurretInspectMethod { get; }
+        public MethodInfo TurretGizmosMethod { get; }
 
         public bool IsWeaponDefinition(ThingDef definition)
         {

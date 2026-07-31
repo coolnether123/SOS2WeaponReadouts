@@ -7,6 +7,7 @@ using HarmonyLib;
 using RimWorld;
 using RimWorldAgent.Extensions;
 using SaveOurShip2;
+using SOS2WeaponReadouts.Domain;
 using SOS2WeaponReadouts.Runtime;
 using SOS2WeaponReadouts.TestFixture.Domain;
 using Verse;
@@ -357,9 +358,7 @@ namespace SOS2WeaponReadouts.TestFixture
             connectedTurret.burstCooldownTicksLeft = 0;
             FiringProbe.Reset(connectedTurret);
             connectedDisplayBefore =
-                WeaponReadoutRuntime.AppendInspectReadout(
-                    connectedTurret,
-                    string.Empty);
+                DescribeReadout(connectedTurret);
             connectedTurret.OrderAttack(
                 new LocalTargetInfo(
                     activeLayout.ConnectedTarget));
@@ -450,9 +449,7 @@ namespace SOS2WeaponReadouts.TestFixture
                 connectedTurret,
                 record,
                 connectedDisplayBefore,
-                WeaponReadoutRuntime.AppendInspectReadout(
-                    connectedTurret,
-                    string.Empty),
+                DescribeReadout(connectedTurret),
                 true,
                 connectedTurret.ConnectedToBridge,
                 connectedTurret.Active);
@@ -498,12 +495,8 @@ namespace SOS2WeaponReadouts.TestFixture
                 "insufficient-power",
                 connectedTurret,
                 record,
-                WeaponReadoutRuntime.AppendInspectReadout(
-                    connectedTurret,
-                    string.Empty),
-                WeaponReadoutRuntime.AppendInspectReadout(
-                    connectedTurret,
-                    string.Empty),
+                DescribeReadout(connectedTurret),
+                DescribeReadout(connectedTurret),
                 false,
                 connectedTurret.ConnectedToBridge,
                 connectedTurret.Active);
@@ -559,9 +552,7 @@ namespace SOS2WeaponReadouts.TestFixture
             }
 
             string display =
-                WeaponReadoutRuntime.AppendInspectReadout(
-                    disconnectedTurret,
-                    string.Empty);
+                DescribeReadout(disconnectedTurret);
             return new FiringResult(
                 "disconnected",
                 disconnectedTurret,
@@ -571,6 +562,31 @@ namespace SOS2WeaponReadouts.TestFixture
                 false,
                 disconnectedTurret.ConnectedToBridge,
                 disconnectedTurret.Active);
+        }
+
+        private static string DescribeReadout(
+            Building_ShipTurret turret)
+        {
+            if (WeaponReadoutRuntime.Adapter == null ||
+                !WeaponReadoutRuntime.Adapter.TryReadPlaced(
+                    turret,
+                    out WeaponReadout readout))
+            {
+                return "<unavailable>";
+            }
+
+            NetworkReadout network = readout.Network;
+            return "currentHeat=" +
+                (network == null
+                    ? "<none>"
+                    : Format(network.Used)) +
+                ";heatCapacity=" +
+                (network == null
+                    ? "<none>"
+                    : Format(network.Capacity)) +
+                ";heatPerShot=" + Format(readout.HeatPerShot) +
+                ";electricalPerShot=" +
+                Format(readout.ElectricalDrawPerShot);
         }
 
         private static void Charge(

@@ -14,7 +14,7 @@ class is not patched. Supporting it safely requires validating CE's separate
 compatibility assembly and is outside the required SOS2 dependency scope.
 
 Future SOS2 releases that add equivalent text are handled semantically: heat,
-electrical, connection, and post-shot capacity fields are independently
+electrical, connection, and current network capacity fields are independently
 suppressed when already present.
 
 ## Performance
@@ -23,8 +23,8 @@ suppressed when already present.
   hook is added.
 - Type/member reflection happens once during adapter construction.
 - Definition cost reads occur only when an information card enumerates stats.
-- Placed cost reads occur only when the inspect pane requests SOS2's turret
-  inspect string.
+- Placed cost reads occur only when RimWorld requests the selected SOS2
+  turret's gizmos.
 - Cardinal cell/network scanning occurs only for the currently active SOS2
   weapon placement designator during RimWorld's ordinary OnGUI mouse-attachment
   pass.

@@ -21,8 +21,8 @@ namespace SOS2WeaponReadouts.UI
                     "SOS2WR.Warning.ThermalDisconnected".Translate(),
                 BridgeDisconnected =
                     "SOS2WR.Warning.BridgeDisconnected".Translate(),
-                HeatAfterShot =
-                    "SOS2WR.Readout.HeatAfterShot".Translate(),
+                CurrentHeat =
+                    "SOS2WR.Readout.CurrentHeat".Translate(),
                 HeatInsufficient =
                     "SOS2WR.Warning.HeatInsufficient".Translate(),
                 ExistingElectricalLine =

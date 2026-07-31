@@ -21,7 +21,7 @@ namespace SOS2WeaponReadouts.Domain
 
         public string BridgeDisconnected { get; set; }
 
-        public string HeatAfterShot { get; set; }
+        public string CurrentHeat { get; set; }
 
         public string HeatInsufficient { get; set; }
 

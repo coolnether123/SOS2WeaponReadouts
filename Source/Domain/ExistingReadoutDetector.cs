@@ -50,7 +50,7 @@ namespace SOS2WeaponReadouts.Domain
                  normalized.Contains("thermal network"));
         }
 
-        public static bool HasNetworkComparison(string text)
+        public static bool HasCurrentNetworkHeat(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -58,9 +58,9 @@ namespace SOS2WeaponReadouts.Domain
             }
 
             var normalized = text.ToLowerInvariant();
-            return normalized.Contains("heat after") ||
-                normalized.Contains("headroom after") ||
-                normalized.Contains("insufficient heat capacity");
+            return normalized.Contains("current network heat") ||
+                normalized.Contains("network heat current") ||
+                normalized.Contains("grid heat stored/capacity");
         }
 
         private static bool ContainsCostLine(

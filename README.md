@@ -1,7 +1,7 @@
 # SOS2 Weapon Readouts
 
 SOS2 Weapon Readouts adds the missing per-shot thermal and electrical costs to
-Save Our Ship 2 weapon descriptions, built-weapon inspection, and placement
+Save Our Ship 2 weapon descriptions, selected-weapon controls, and placement
 previews. It never changes weapon balance, placement validity, firing logic, or
 save data.
 
@@ -9,10 +9,10 @@ save data.
 
 - Exact heat generated per firing cycle in SOS2 heat units (HU).
 - Exact electrical draw per firing cycle in watt-days (Wd).
-- Built-weapon post-shot heat/capacity comparison.
+- Compact selected-weapon display with current network heat/capacity.
 - Clear disconnected-network and missing-bridge information.
 - Non-blocking placement readouts and safety warnings.
-- Independent toggles for descriptions, inspect output, electrical values,
+- Independent toggles for descriptions, the selected-weapon display, electrical values,
   network comparison, and placement previews.
 - Semantic deduplication when SOS2 already supplies a field.
 

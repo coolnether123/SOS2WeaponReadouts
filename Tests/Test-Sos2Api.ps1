@@ -107,7 +107,7 @@ try
     {
         Assert-Member $types.Turret $name Property
     }
-    Assert-Member $types.Turret 'GetInspectString' Method
+    Assert-Member $types.Turret 'GetGizmos' Method
 
     Assert-Member $types.HeatComp 'myNet' Field
     Assert-Member $types.HeatComp 'Props' Property

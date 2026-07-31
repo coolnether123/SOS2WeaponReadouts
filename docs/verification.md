@@ -33,6 +33,20 @@ This structural regression gate requires placement readouts to use
 Final result:
 `PASS: placement readout GUI is confined to PlaceWorker.DrawPlaceMouseAttachments.`
 
+## Inspect-panel boundary
+
+```powershell
+powershell -ExecutionPolicy Bypass -File Tests\Test-InspectPanelBoundary.ps1
+```
+
+This structural regression gate scans all production C# source. It fails if
+the mod targets `GetInspectString`, retains the removed inspect appender, omits
+the legal selected-turret `GizmoOnGUI` path, or restores player-facing
+"heat after shot" wording.
+
+Final result:
+`PASS: built-weapon readouts use a current-heat gizmo without extending the inspect panel.`
+
 ## Pinned SOS2 API contract
 
 ```powershell
@@ -99,9 +113,13 @@ Final isolated lane
 mod plus the separate developer fixture. After the fixture built and fired its
 real SOS2 laser network, its developer-only `select-placement
 ShipTurret_Laser` action selected RimWorld's ordinary `Designator_Build`.
-With the pointer over the connected fixture, the placement ghost visibly
+With the pointer over the connected fixture, the historical placement ghost visibly
 showed `Heat generated per shot: 30 HU`, `Electrical draw per shot: 80 Wd`,
 and `Network heat after shot: 30.11 / 200 HU`.
+
+That capture predates the current-heat UI revision. It remains valid evidence
+for the legal OnGUI placement boundary only; its projected-heat wording is
+superseded and is not accepted as current player-facing UI evidence.
 
 The in-game and output-log scans contained zero exception matches and zero
 matches for `You can only call GUI functions from inside OnGUI`. The only
@@ -132,8 +150,9 @@ separate thermally disconnected laser network.
   `Projectile.Launch` of `Bullet_Ground_Laser`.
 - Heat changed from `0` to `30 HU`; stored power changed from `999.894` to
   `919.894 Wd`, exactly matching the weapon's `30 HU / 80 Wd` firing costs.
-- The production inspect readout showed those same per-shot values and the
-  real network's post-shot comparison.
+- The then-current production inspect readout showed those same per-shot
+  values. That UI path is historical and has since been removed in favor of
+  the selected-weapon gizmo.
 - With only `78.925 Wd` available, the turret entered `BeginBurst` but produced
   zero casts, zero projectile launches, zero heat increase, and zero
   weapon-scale power draw.
@@ -224,8 +243,8 @@ test.
 
 - The insufficient-capacity formatter branch is covered by a pure contract.
   Runtime firing evidence exercises SOS2's actual insufficient-power
-  suppression, but the harness does not capture every scroll position of the
-  inspect pane.
+  suppression. The inspect-panel boundary test mechanically prevents this mod
+  from adding any inspect-string content.
 - Missing SOS2 is prevented by the declared required dependency. The dormant
   fallback adapter returns no readouts when SOS2 is inactive, and incompatible
   API shape is caught before patch installation. These paths were inspected

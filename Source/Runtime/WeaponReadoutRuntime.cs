@@ -129,41 +129,44 @@ namespace SOS2WeaponReadouts.Runtime
             }
         }
 
-        public static string AppendInspectReadout(
+        public static IEnumerable<Gizmo> AppendSelectedWeaponGizmo(
             object building,
-            string existing)
+            IEnumerable<Gizmo> existing)
         {
+            var gizmos = (existing ?? Enumerable.Empty<Gizmo>())
+                .ToList();
             var settings = SOS2WeaponReadoutsMod.Instance?.Settings;
             if (settings == null ||
                 !settings.FeatureEnabled ||
-                !settings.ShowInInspectPane ||
+                !settings.ShowSelectedWeaponReadout ||
                 Adapter == null)
             {
-                return existing;
+                return gizmos;
             }
 
             try
             {
                 if (!Adapter.TryReadPlaced(
                     building,
-                    out var readout))
+                    out WeaponReadout readout))
                 {
-                    return existing;
+                    return gizmos;
                 }
 
-                return ReadoutFormatter.AppendMissing(
-                    existing,
+                gizmos.Add(new WeaponReadoutGizmo(
                     readout,
                     CreatePresentation(settings),
                     ReadoutLocalizer.CreateLabels(readout),
-                    false);
+                    building?.GetHashCode() ??
+                        HarmonyId.GetHashCode()));
+                return gizmos;
             }
             catch (Exception exception)
             {
                 CompatibilityDiagnostics.ReportExceptionOnce(
-                    "inspect readout",
+                    "selected weapon gizmo",
                     exception);
-                return existing;
+                return gizmos;
             }
         }
 

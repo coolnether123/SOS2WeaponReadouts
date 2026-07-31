@@ -146,25 +146,24 @@ namespace SOS2WeaponReadouts.Domain
             }
 
             if (!presentation.ShowNetworkComparison ||
-                ExistingReadoutDetector.HasNetworkComparison(existing) ||
-                ContainsIgnoreCase(existing, labels.HeatAfterShot) ||
-                ContainsIgnoreCase(existing, labels.HeatInsufficient))
+                ExistingReadoutDetector.HasCurrentNetworkHeat(existing) ||
+                ContainsIgnoreCase(existing, labels.CurrentHeat))
             {
-                return;
-            }
-
-            var afterShot = network.Used + readout.HeatPerShot;
-            if (afterShot > network.Capacity + 0.001f)
-            {
-                AddNonBlank(result, labels.HeatInsufficient);
                 return;
             }
 
             result.Add(
-                labels.HeatAfterShot + ": " +
-                FormatNumber(afterShot) + " / " +
+                labels.CurrentHeat + ": " +
+                FormatNumber(network.Used) + " / " +
                 FormatNumber(network.Capacity) + " " +
                 labels.HeatUnits);
+
+            if (network.Used + readout.HeatPerShot >
+                    network.Capacity + 0.001f &&
+                !ContainsIgnoreCase(existing, labels.HeatInsufficient))
+            {
+                AddNonBlank(result, labels.HeatInsufficient);
+            }
         }
 
         private static bool ContainsIgnoreCase(

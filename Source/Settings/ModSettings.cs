@@ -6,7 +6,7 @@ namespace SOS2WeaponReadouts.Settings
     {
         public bool FeatureEnabled = true;
         public bool ShowInDescriptions = true;
-        public bool ShowInInspectPane = true;
+        public bool ShowSelectedWeaponReadout = true;
         public bool ShowElectricalDraw = true;
         public bool ShowNetworkComparison = true;
         public bool ShowPlacementWarnings = true;
@@ -22,7 +22,7 @@ namespace SOS2WeaponReadouts.Settings
                 "showInDescriptions",
                 true);
             Scribe_Values.Look(
-                ref ShowInInspectPane,
+                ref ShowSelectedWeaponReadout,
                 "showInInspectPane",
                 true);
             Scribe_Values.Look(

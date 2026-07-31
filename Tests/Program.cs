@@ -19,7 +19,7 @@ namespace SOS2WeaponReadouts.Tests
                     "Not connected to a thermal network.",
                 BridgeDisconnected =
                     "Thermal network has no ship bridge.",
-                HeatAfterShot = "Network heat after shot",
+                CurrentHeat = "Current network heat",
                 HeatInsufficient =
                     "Insufficient thermal capacity for one shot.",
                 ExistingElectricalLine =
@@ -122,7 +122,9 @@ namespace SOS2WeaponReadouts.Tests
             False(lines.Any(
                 line => line.StartsWith("Heat generated")),
                 "future SOS2 heat line must suppress heat duplicate");
-            Contains(string.Join("\n", lines), "Network heat after shot");
+            False(lines.Any(
+                line => line.Contains("Current network heat")),
+                "existing SOS2 grid heat must suppress a current-heat duplicate");
         }
 
         private static void TestSeparateNetworkAndEnergyLinesDoNotHideHeat()
@@ -222,7 +224,7 @@ namespace SOS2WeaponReadouts.Tests
                 Labels);
             Contains(
                 string.Join("\n", lines),
-                "Network heat after shot: 50 / 100 HU");
+                "Current network heat: 20 / 100 HU");
         }
 
         private static void TestInsufficientCapacity()
@@ -240,6 +242,9 @@ namespace SOS2WeaponReadouts.Tests
             Contains(
                 string.Join("\n", lines),
                 "Insufficient thermal capacity for one shot.");
+            Contains(
+                string.Join("\n", lines),
+                "Current network heat: 80 / 100 HU");
         }
 
         private static void TestUnavailableSpinalValues()
