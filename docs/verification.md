@@ -239,6 +239,32 @@ worker logs a `ThreadAbortException` while the runtime tears down its
 dedicated thread; it occurs after the harness shutdown request, not during the
 test.
 
+### Current-heat gizmo and descender proof
+
+Commit `d50085fa0e97f7ba517570310dab919301823eb0` removes the
+built-weapon inspect-string patch and appends a fixed-height selected-turret
+gizmo instead. Its data rows reserve 18 pixels for RimWorld's Tiny font. The
+clean centralized build reproduced shipping DLL SHA-256
+`E322069CE9DABDD7CAF2E85A21F8C998E36A05BE15CA2A533BC39E08F1DA23CE`.
+
+Combined four-mod lane
+`SOS2WeaponReadouts-2e992ce2752649e595585a7a8cdc5ab0` loaded TechSense
+Filters, Prisoner Interaction Timer, SOS2 Weapon Readouts, and Faction Lens
+with developer mode enabled. The real firing fixture passed. With its
+connected laser selected, the gizmo visibly showed current heat/capacity,
+heat generated per shot, and electrical draw per shot. The bottom-left inspect
+panel contained only SOS2's existing information and had no scrollbar. A
+zoomed review confirmed the `g` descender in “generated” was intact.
+
+Capture:
+`C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-2e992ce2752649e595585a7a8cdc5ab0\ipc\captures\sos2-current-heat-gizmo-descenders-final-20260731-022714-293.png`
+
+Capture SHA-256:
+`3BC8FFCF9B80E61D7E33097B98E01599392C79F66FE599AD442FB9CE45A16964`
+
+The live log contained zero `Exception in UIRootUpdate`, illegal-OnGUI,
+SOS2 Weapon Readouts exception, or Harmony-failure matches.
+
 ## Review limitations
 
 - The insufficient-capacity formatter branch is covered by a pure contract.
