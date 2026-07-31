@@ -20,6 +20,19 @@ resource deltas, suppressed-fire behavior, and resource-mismatch rejection.
 
 Final result: `PASS: 16 SOS2 weapon readout contracts`.
 
+## Placement GUI boundary
+
+```powershell
+powershell -ExecutionPolicy Bypass -File Tests\Test-PlacementGuiBoundary.ps1
+```
+
+This structural regression gate requires placement readouts to use
+`PlaceWorker.DrawPlaceMouseAttachments` and fails if the worker regains a
+`DrawGhost` or `SelectedUpdate` path, `GenMapUI`, or `GUI.DrawTexture`.
+
+Final result:
+`PASS: placement readout GUI is confined to PlaceWorker.DrawPlaceMouseAttachments.`
+
 ## Pinned SOS2 API contract
 
 ```powershell
@@ -78,6 +91,33 @@ the central record avoids a self-referential documentation commit changing the
 source HEAD after packaging.
 
 ## Controlled RimWorld 1.6 evidence
+
+### Placement OnGUI regression
+
+Final isolated lane
+`SOS2WeaponReadouts-ea0865c2c2484285a3516382004eee2a` loaded the production
+mod plus the separate developer fixture. After the fixture built and fired its
+real SOS2 laser network, its developer-only `select-placement
+ShipTurret_Laser` action selected RimWorld's ordinary `Designator_Build`.
+With the pointer over the connected fixture, the placement ghost visibly
+showed `Heat generated per shot: 30 HU`, `Electrical draw per shot: 80 Wd`,
+and `Network heat after shot: 30.11 / 200 HU`.
+
+The in-game and output-log scans contained zero exception matches and zero
+matches for `You can only call GUI functions from inside OnGUI`. The only
+pre-shutdown error remained SOS2's known missing `PlantPot_Bonsai` definition.
+Cleanup reported
+`removed=157; cacheRemoved=True; shipsRemaining=0; cleanupErrors=0`, no
+detach warning appeared, and map inspection found zero remaining laser
+turrets. A post-cleanup 600-tick sample completed in `0.256683` seconds
+(`2337.52 ticks/second`). The lane stopped normally with exit code 0 and no
+forced termination.
+
+Capture:
+`C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-ea0865c2c2484285a3516382004eee2a\ipc\captures\placement-readout-legal-ongui-20260731-013045-278.png`
+
+Capture SHA-256:
+`0451D23B9819B48A6288C6B07E4383A3B48A7E408A88194F8071A00F24AB0C69`
 
 ### Real SOS2 firing proof
 

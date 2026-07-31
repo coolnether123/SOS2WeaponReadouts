@@ -50,7 +50,8 @@ namespace SOS2WeaponReadouts.TestFixture
             yield return new AgentToolDefinition(
                 ToolId,
                 "mod-fixtures",
-                ToolId + " <run|status|cleanup>",
+                ToolId +
+                    " <run|status|cleanup|select-placement [ThingDef]>",
                 "Construct, fire, and verify a valid SOS2 laser ship fixture.",
                 true);
         }
@@ -79,9 +80,12 @@ namespace SOS2WeaponReadouts.TestFixture
                     return lastReport;
                 case "cleanup":
                     return Cleanup();
+                case "select-placement":
+                    return SelectPlacement(args);
                 default:
                     return "usage: " + ToolId +
-                        " <run|status|cleanup>";
+                        " <run|status|cleanup|" +
+                        "select-placement [ThingDef]>";
             }
         }
 
@@ -139,6 +143,26 @@ namespace SOS2WeaponReadouts.TestFixture
             {
                 return FailAndCleanup(exception);
             }
+        }
+
+        private static string SelectPlacement(
+            string[] args)
+        {
+            if (Find.CurrentMap == null)
+            {
+                return "placement selection failed: no current map";
+            }
+
+            string defName =
+                args != null && args.Length > 1
+                    ? args[1]
+                    : "ShipTurret_Laser";
+            ThingDef definition = RequireDef(defName);
+            Designator_Build designator =
+                new Designator_Build(definition);
+            Find.DesignatorManager.Select(designator);
+            return "placement designator selected: " +
+                definition.defName;
         }
 
         private void AdvanceFixture(AgentFrameContext context)

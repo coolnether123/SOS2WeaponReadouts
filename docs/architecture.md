@@ -31,8 +31,11 @@ component runs while the UI is closed.
   values.
 
 `UI/WeaponReadoutPlaceWorker.cs` is attached only to SOS2 weapon definitions
-after definition loading. It draws information but never rejects placement.
-Settings use Spine's shared settings widgets instead of another framework.
+after definition loading. It appends heat, electrical, and network lines
+through RimWorld's supported `PlaceWorker.DrawPlaceMouseAttachments` OnGUI
+callback. It does not draw from `DrawGhost`/`SelectedUpdate` and never rejects
+placement. Settings use Spine's shared settings widgets instead of another
+framework.
 
 ## Developer fixture boundary
 

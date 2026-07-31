@@ -6,16 +6,16 @@ namespace SOS2WeaponReadouts.UI
 {
     public sealed class WeaponReadoutPlaceWorker : PlaceWorker
     {
-        public override void DrawGhost(
-            ThingDef definition,
+        public override void DrawPlaceMouseAttachments(
+            float curX,
+            ref float curY,
+            BuildableDef definition,
             IntVec3 center,
-            Rot4 rotation,
-            Color ghostColor,
-            Thing thing = null)
+            Rot4 rotation)
         {
             var map = Find.CurrentMap;
             if (!WeaponReadoutRuntime.TryCreatePlacementReadout(
-                definition,
+                definition as ThingDef,
                 center,
                 rotation,
                 map,
@@ -25,10 +25,15 @@ namespace SOS2WeaponReadouts.UI
                 return;
             }
 
-            GenMapUI.DrawThingLabel(
-                GenMapUI.LabelDrawPosFor(center),
-                text,
-                warning ? ColorLibrary.RedReadable : Color.white);
+            foreach (var line in text.Split('\n'))
+            {
+                DrawTextLine(
+                    curX,
+                    ref curY,
+                    warning
+                        ? line.Colorize(ColorLibrary.RedReadable)
+                        : line);
+            }
         }
     }
 }

@@ -11,6 +11,15 @@
     "captureSha256": "843852915DC7C48BC7CA5C12B3D306827E29023953E984F45BA39D901F0B4320",
     "cleanup": "cacheRemoved=True; shipsRemaining=0; cleanupErrors=0"
   },
+  "placementGuiFix": {
+    "runtimeSession": "SOS2WeaponReadouts-ea0865c2c2484285a3516382004eee2a",
+    "modAssemblySha256": "59312BB1157F0BAE18694A65D15701FEF589E963F55335132B577906D22F3503",
+    "fixtureAssemblySha256": "0A0452D506A1A03BAA50FF8A5984CA624BE7B4FB697691F813CA13767A58570F",
+    "firingArtifactSha256": "2C385E4F7B82D9EE5994073C02042A7A32124FC2D4C8CF16980A8AE2A34D8DC8",
+    "placementCaptureSha256": "0451D23B9819B48A6288C6B07E4383A3B48A7E408A88194F8071A00F24AB0C69",
+    "guiExceptionMatches": 0,
+    "cleanup": "cacheRemoved=True; shipsRemaining=0; cleanupErrors=0"
+  },
   "releasePackage": {
     "result": "RWT-BUILD-RELEASE-PACKAGE-VALID",
     "packagerImplementationCommit": "af5c9ee31a1b934a3f2d655d3d65af2427ada251",

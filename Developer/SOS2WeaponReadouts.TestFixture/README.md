@@ -12,6 +12,7 @@ production mod as `-ModPath` and this directory as an explicit
 ```text
 dev-run sos2wr-firing-fixture run
 dev-run sos2wr-firing-fixture status
+dev-run sos2wr-firing-fixture select-placement ShipTurret_Laser
 dev-run sos2wr-firing-fixture cleanup
 ```
 
@@ -20,6 +21,10 @@ a real SOS2 ship and connected/disconnected laser networks, fires through the
 ordinary SOS2 attack path, observes burst/cast/projectile calls, and verifies
 exact heat and power deltas. `cleanup` must report
 `cacheRemoved=True; shipsRemaining=0; cleanupErrors=0` before the lane stops.
+
+`select-placement` selects RimWorld's ordinary build designator for the
+requested ThingDef. It exists only to exercise placement UI in an isolated
+fixture lane; the production mod does not expose or depend on this command.
 
 The fixture uses one repository-local proof evaluator that is linked into the
 pure test executable. That one-consumer helper is deliberate test

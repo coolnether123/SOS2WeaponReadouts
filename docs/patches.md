@@ -29,4 +29,7 @@ Risk controls:
 - No firing, ticking, power, heat, or placement method is patched.
 
 Placement integration uses RimWorld's standard `PlaceWorker` definition list,
-not Harmony. It only draws text and never changes `AllowsPlacing`.
+not Harmony. It only draws text from the supported
+`DrawPlaceMouseAttachments` OnGUI callback and never changes `AllowsPlacing`.
+`DrawGhost` remains unimplemented because RimWorld invokes that path from
+`Designator_Place.SelectedUpdate`, where immediate-mode GUI calls are illegal.

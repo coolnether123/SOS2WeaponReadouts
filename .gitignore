@@ -5,3 +5,4 @@
 *.user
 Engineering/artifacts/
 Developer/**/Assemblies/*.pdb
+1.6/Assemblies/*.pdb

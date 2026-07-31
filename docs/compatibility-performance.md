@@ -26,7 +26,8 @@ suppressed when already present.
 - Placed cost reads occur only when the inspect pane requests SOS2's turret
   inspect string.
 - Cardinal cell/network scanning occurs only for the currently active SOS2
-  weapon placement ghost.
+  weapon placement designator during RimWorld's ordinary OnGUI mouse-attachment
+  pass.
 - The settings window reads status text only while open.
 
 Consequently, the mod adds no work per frame while its UI surfaces are closed.
