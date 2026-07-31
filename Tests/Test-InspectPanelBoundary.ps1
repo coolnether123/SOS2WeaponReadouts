@@ -61,6 +61,14 @@ if ($gizmoSource -notmatch
     $failures.Add(
         'The selected-weapon tooltip must suppress duplicate electrical draw.')
 }
+if ($gizmoSource -match
+    'Gizmo\.Title|SOS2 weapon readout(?!s)' -or
+    $languageSource -match
+    'SOS2WR\.Gizmo\.Title|>SOS2 weapon readout<')
+{
+    $failures.Add(
+        'The selected SOS2 gun must not repeat a redundant mod title.')
+}
 if ($runtimeSource -notmatch
     'AppendSelectedWeaponGizmo')
 {

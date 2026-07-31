@@ -11,8 +11,7 @@ namespace SOS2WeaponReadouts.UI
         private const float Width = 210f;
         private const float GizmoHeight = 75f;
         private const float Padding = 4f;
-        private const float TitleRowHeight = 19f;
-        private const float DataRowHeight = 24f;
+        private const float DataRowHeight = 33.5f;
 
         private readonly WeaponReadout readout;
         private readonly ReadoutPresentation presentation;
@@ -60,15 +59,8 @@ namespace SOS2WeaponReadouts.UI
             try
             {
                 Text.Font = GameFont.Tiny;
-                Text.Anchor = TextAnchor.UpperLeft;
+                Text.Anchor = TextAnchor.MiddleLeft;
                 float y = content.y;
-                DrawRow(
-                    content,
-                    ref y,
-                    "SOS2WR.Gizmo.Title".Translate(),
-                    Color.white,
-                    TitleRowHeight);
-
                 DrawRow(
                     content,
                     ref y,

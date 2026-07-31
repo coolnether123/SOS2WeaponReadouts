@@ -11,7 +11,6 @@
   <SOS2WR.Settings.Compatibility>Compatibility</SOS2WR.Settings.Compatibility>
 
   <SOS2WR.Readout.Section>SOS2 weapon costs</SOS2WR.Readout.Section>
-  <SOS2WR.Gizmo.Title>SOS2 weapon readout</SOS2WR.Gizmo.Title>
   <SOS2WR.Readout.HeatPerShot>Heat generated per shot</SOS2WR.Readout.HeatPerShot>
   <SOS2WR.Readout.ElectricalDraw>Electrical draw per shot</SOS2WR.Readout.ElectricalDraw>
   <SOS2WR.Readout.ValuesUnavailable>Per-shot costs are unavailable until the spinal weapon's amplifier chain is resolved.</SOS2WR.Readout.ValuesUnavailable>
