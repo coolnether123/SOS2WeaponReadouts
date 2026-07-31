@@ -10,8 +10,9 @@ namespace SOS2WeaponReadouts.UI
     {
         private const float Width = 210f;
         private const float GizmoHeight = 75f;
-        private const float Padding = 5f;
-        private const float RowHeight = 16f;
+        private const float Padding = 3f;
+        private const float TitleRowHeight = 15f;
+        private const float DataRowHeight = 18f;
 
         private readonly WeaponReadout readout;
         private readonly ReadoutPresentation presentation;
@@ -65,7 +66,8 @@ namespace SOS2WeaponReadouts.UI
                     content,
                     ref y,
                     "SOS2WR.Gizmo.Title".Translate(),
-                    Color.white);
+                    Color.white,
+                    TitleRowHeight);
 
                 DrawRow(
                     content,
@@ -73,7 +75,8 @@ namespace SOS2WeaponReadouts.UI
                     CurrentHeatText(),
                     HasThermalWarning()
                         ? ColorLibrary.RedReadable
-                        : Color.white);
+                        : Color.white,
+                    DataRowHeight);
                 DrawRow(
                     content,
                     ref y,
@@ -81,7 +84,8 @@ namespace SOS2WeaponReadouts.UI
                         ReadoutFormatter.FormatNumber(
                             readout.HeatPerShot) +
                         " " + labels.HeatUnits,
-                    Color.white);
+                    Color.white,
+                    DataRowHeight);
 
                 if (presentation.ShowElectricalDraw)
                 {
@@ -92,7 +96,8 @@ namespace SOS2WeaponReadouts.UI
                             ReadoutFormatter.FormatNumber(
                                 readout.ElectricalDrawPerShot) +
                             " " + labels.ElectricalUnits,
-                        Color.white);
+                        Color.white,
+                        DataRowHeight);
                 }
 
                 TooltipHandler.TipRegion(
@@ -156,7 +161,8 @@ namespace SOS2WeaponReadouts.UI
             Rect content,
             ref float y,
             string text,
-            Color color)
+            Color color,
+            float height)
         {
             if (string.IsNullOrWhiteSpace(text))
             {
@@ -169,9 +175,9 @@ namespace SOS2WeaponReadouts.UI
                     content.x,
                     y,
                     content.width,
-                    RowHeight),
+                    height),
                 text);
-            y += RowHeight;
+            y += height;
         }
     }
 }

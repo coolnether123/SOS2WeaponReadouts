@@ -42,6 +42,13 @@ if ($gizmoSource -notmatch
     $failures.Add(
         'The selected-weapon readout must render as a legal GizmoOnGUI.')
 }
+if ($gizmoSource -notmatch
+    'DataRowHeight\s*=\s*(?<height>[0-9.]+)f' -or
+    [float]$Matches['height'] -lt 18)
+{
+    $failures.Add(
+        'Gizmo data rows must leave at least 18 pixels for font descenders.')
+}
 if ($runtimeSource -notmatch
     'AppendSelectedWeaponGizmo')
 {
