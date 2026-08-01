@@ -51,19 +51,24 @@ namespace SOS2WeaponReadouts.Compatibility
 
         internal static Type FindRequiredType(string fullName)
         {
-            var type = AppDomain.CurrentDomain
-                .GetAssemblies()
-                .Select(assembly => assembly.GetType(
-                    fullName,
-                    false,
-                    false))
-                .FirstOrDefault(candidate => candidate != null);
+            var type = FindOptionalType(fullName);
             if (type == null)
             {
                 throw new TypeLoadException(fullName);
             }
 
             return type;
+        }
+
+        internal static Type FindOptionalType(string fullName)
+        {
+            return AppDomain.CurrentDomain
+                .GetAssemblies()
+                .Select(assembly => assembly.GetType(
+                    fullName,
+                    false,
+                    false))
+                .FirstOrDefault(candidate => candidate != null);
         }
     }
 }

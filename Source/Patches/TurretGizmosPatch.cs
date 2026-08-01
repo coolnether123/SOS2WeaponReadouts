@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using HarmonyLib;
 using SOS2WeaponReadouts.Runtime;
@@ -11,12 +12,14 @@ namespace SOS2WeaponReadouts.Patches
     {
         private static bool Prepare()
         {
-            return WeaponReadoutRuntime.Adapter?.TurretGizmosMethod != null;
+            return WeaponReadoutRuntime.Adapter?.TurretGizmosMethods?.Count > 0;
         }
 
-        private static MethodBase TargetMethod()
+        private static IEnumerable<MethodBase> TargetMethods()
         {
-            return WeaponReadoutRuntime.Adapter?.TurretGizmosMethod;
+            return WeaponReadoutRuntime.Adapter?.TurretGizmosMethods
+                ?.Cast<MethodBase>() ??
+                Enumerable.Empty<MethodBase>();
         }
 
         private static void Postfix(

@@ -6,7 +6,11 @@ param(
     [string]$VehicleAssemblies,
 
     [Parameter(Mandatory = $true)]
-    [string]$ManagedAssemblies
+    [string]$ManagedAssemblies,
+
+    [string]$CeSos2CompatAssembly,
+
+    [string]$CeCombatExtendedAssembly
 )
 
 $ErrorActionPreference = 'Stop'
@@ -55,11 +59,26 @@ foreach ($path in @($sos2Path, $vehicleRoot, $managedRoot))
 }
 
 $sos2Root = Split-Path -Parent $sos2Path
+$resolverRoots = @($sos2Root, $vehicleRoot, $managedRoot)
+foreach ($optionalAssembly in @(
+    $CeSos2CompatAssembly,
+    $CeCombatExtendedAssembly))
+{
+    if (-not [string]::IsNullOrWhiteSpace($optionalAssembly))
+    {
+        $optionalPath = [IO.Path]::GetFullPath($optionalAssembly)
+        if (-not (Test-Path -LiteralPath $optionalPath -PathType Leaf))
+        {
+            throw "Optional API probe assembly does not exist: $optionalPath"
+        }
+        $resolverRoots += Split-Path -Parent $optionalPath
+    }
+}
 $resolver = [ResolveEventHandler] {
     param($sender, $eventArgs)
 
     $fileName = ([Reflection.AssemblyName]$eventArgs.Name).Name + '.dll'
-    foreach ($root in @($sos2Root, $vehicleRoot, $managedRoot))
+    foreach ($root in $resolverRoots)
     {
         $candidate = Join-Path $root $fileName
         if (Test-Path -LiteralPath $candidate -PathType Leaf)
@@ -121,6 +140,35 @@ try
     foreach ($name in @('StorageCapacity', 'StorageUsed'))
     {
         Assert-Member $types.HeatNetwork $name Property
+    }
+
+    if (-not [string]::IsNullOrWhiteSpace($CeSos2CompatAssembly))
+    {
+        $cePath = [IO.Path]::GetFullPath($CeSos2CompatAssembly)
+        if ([string]::IsNullOrWhiteSpace($CeCombatExtendedAssembly))
+        {
+            throw 'CeCombatExtendedAssembly is required with CeSos2CompatAssembly.'
+        }
+
+        $ceMainPath = [IO.Path]::GetFullPath($CeCombatExtendedAssembly)
+        [void][Reflection.Assembly]::ReflectionOnlyLoadFrom($ceMainPath)
+        $ceAssembly = [Reflection.Assembly]::ReflectionOnlyLoadFrom($cePath)
+        $ceType = $ceAssembly.GetType(
+            'CombatExtended.Compatibility.SOS2Compat.Building_ShipTurretCE',
+            $false,
+            $false)
+        if ($null -eq $ceType)
+        {
+            throw 'CE SOS2 compatibility API missing Building_ShipTurretCE.'
+        }
+        Assert-Member $ceType 'heatComp' Field
+        Assert-Member $ceType 'HeatToFire' Property
+        Assert-Member $ceType 'EnergyToFire' Property
+        Assert-Member $ceType 'GetGizmos' Method
+        Write-Output (
+            'PASS: Combat Extended SOS2 surrogate exposes the reflected ' +
+            'weapon adapter shape; assemblySha256=' +
+            (Get-FileHash -Algorithm SHA256 -LiteralPath $cePath).Hash)
     }
 
     $hash = (Get-FileHash -Algorithm SHA256 -LiteralPath $sos2Path).Hash

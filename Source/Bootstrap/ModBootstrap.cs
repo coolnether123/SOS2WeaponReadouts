@@ -2,6 +2,7 @@ using UnityEngine;
 using Verse;
 using SOS2WeaponReadouts.Settings;
 using SOS2WeaponReadouts.Runtime;
+using Spine.Api;
 using Spine.UI.WidgetExtensions;
 
 namespace SOS2WeaponReadouts.Bootstrap
@@ -15,6 +16,11 @@ namespace SOS2WeaponReadouts.Bootstrap
         public SOS2WeaponReadoutsMod(ModContentPack content)
             : base(content)
         {
+            SpineApi.Runtime.Require(new SpineRequirement(
+                "CoolNether123.SOS2WeaponReadouts",
+                new SemanticVersion(1, 0, 0),
+                SpineCapability.Settings));
+
             Instance = this;
             Settings = GetSettings<SOS2WeaponReadoutsSettings>();
             WeaponReadoutRuntime.Initialize(content);

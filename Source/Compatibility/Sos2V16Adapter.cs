@@ -9,17 +9,14 @@ namespace SOS2WeaponReadouts.Compatibility
 {
     internal sealed class Sos2V16Adapter : ISos2WeaponAdapter
     {
-        private readonly Type turretType;
+        private const string CeSurrogateTypeName =
+            "CombatExtended.Compatibility.SOS2Compat.Building_ShipTurretCE";
+
+        private readonly IReadOnlyList<WeaponTypeBinding> weaponTypes;
         private readonly Type heatCompType;
         private readonly Type heatPropsType;
-        private readonly FieldInfo turretHeatComp;
-        private readonly FieldInfo amplifierCount;
-        private readonly FieldInfo spinalComp;
-        private readonly PropertyInfo turretHeatToFire;
-        private readonly PropertyInfo turretEnergyToFire;
         private readonly FieldInfo heatCompNetwork;
         private readonly PropertyInfo heatCompProps;
-        private readonly PropertyInfo connectedToBridge;
         private readonly FieldInfo heatPerPulse;
         private readonly FieldInfo energyToFire;
         private readonly PropertyInfo networkCapacity;
@@ -30,7 +27,7 @@ namespace SOS2WeaponReadouts.Compatibility
 
         public Sos2V16Adapter()
         {
-            turretType = Sos2AdapterFactory.FindRequiredType(
+            var turretType = Sos2AdapterFactory.FindRequiredType(
                 "SaveOurShip2.Building_ShipTurret");
             heatCompType = Sos2AdapterFactory.FindRequiredType(
                 "SaveOurShip2.CompShipHeat");
@@ -39,21 +36,22 @@ namespace SOS2WeaponReadouts.Compatibility
             var heatNetworkType = Sos2AdapterFactory.FindRequiredType(
                 "SaveOurShip2.ShipHeatNet");
 
-            turretHeatComp = RequireField(turretType, "heatComp");
-            amplifierCount = RequireField(turretType, "AmplifierCount");
-            spinalComp = RequireField(turretType, "spinalComp");
-            turretHeatToFire = RequireProperty(
-                turretType,
-                "HeatToFire");
-            turretEnergyToFire = RequireProperty(
-                turretType,
-                "EnergyToFire");
-            connectedToBridge = RequireProperty(
-                turretType,
-                "ConnectedToBridge");
-            TurretGizmosMethod = RequireMethod(
-                turretType,
-                "GetGizmos");
+            var bindings = new List<WeaponTypeBinding>
+            {
+                WeaponTypeBinding.CreateSos2(turretType)
+            };
+            var ceSurrogateType = Sos2AdapterFactory.FindOptionalType(
+                CeSurrogateTypeName);
+            if (ceSurrogateType != null)
+            {
+                bindings.Add(WeaponTypeBinding.CreateCeSurrogate(
+                    ceSurrogateType));
+            }
+            weaponTypes = bindings;
+            TurretGizmosMethods = bindings
+                .Select(binding => binding.GetGizmos)
+                .Distinct()
+                .ToList();
 
             heatCompNetwork = RequireField(heatCompType, "myNet");
             heatCompProps = RequireProperty(heatCompType, "Props");
@@ -76,17 +74,20 @@ namespace SOS2WeaponReadouts.Compatibility
             Status = new CompatibilityStatus(
                 CompatibilityState.Supported,
                 "SOS2 " + assemblyName.Version +
-                " exposes the supported RimWorld 1.6 weapon API.");
+                " exposes the supported RimWorld 1.6 weapon API" +
+                (ceSurrogateType == null
+                    ? "."
+                    : ", including Combat Extended surrogate turrets."));
         }
 
         public CompatibilityStatus Status { get; }
 
-        public MethodInfo TurretGizmosMethod { get; }
+        public IReadOnlyList<MethodInfo> TurretGizmosMethods { get; }
 
         public bool IsWeaponDefinition(ThingDef definition)
         {
             return definition?.thingClass != null &&
-                turretType.IsAssignableFrom(definition.thingClass) &&
+                FindWeaponType(definition.thingClass) != null &&
                 FindHeatProperties(definition) != null;
         }
 
@@ -112,13 +113,13 @@ namespace SOS2WeaponReadouts.Compatibility
             out WeaponReadout readout)
         {
             readout = null;
-            if (building == null ||
-                !turretType.IsInstanceOfType(building))
+            var binding = FindWeaponType(building?.GetType());
+            if (binding == null)
             {
                 return false;
             }
 
-            var heatComp = turretHeatComp.GetValue(building);
+            var heatComp = binding.HeatComp.GetValue(building);
             var properties = heatComp == null
                 ? null
                 : heatCompProps.GetValue(heatComp, null);
@@ -130,15 +131,21 @@ namespace SOS2WeaponReadouts.Compatibility
             var network = heatCompNetwork.GetValue(heatComp);
             var networkReadout = ReadNetwork(
                 network,
-                ReadBoolean(connectedToBridge, building));
+                binding.ConnectedToBridge == null
+                    ? HasBridge(network)
+                    : ReadBoolean(
+                        binding.ConnectedToBridge,
+                        building));
             var hasUnresolvedSpinalAmplifiers =
-                spinalComp.GetValue(building) != null &&
+                binding.SpinalComp != null &&
+                binding.AmplifierCount != null &&
+                binding.SpinalComp.GetValue(building) != null &&
                 Convert.ToInt32(
-                    amplifierCount.GetValue(building)) < 0;
+                    binding.AmplifierCount.GetValue(building)) < 0;
 
             readout = new WeaponReadout(
-                ReadSingle(turretHeatToFire, building),
-                ReadSingle(turretEnergyToFire, building),
+                ReadSingle(binding.HeatToFire, building),
+                ReadSingle(binding.EnergyToFire, building),
                 !hasUnresolvedSpinalAmplifiers,
                 networkReadout);
             return true;
@@ -203,6 +210,14 @@ namespace SOS2WeaponReadouts.Compatibility
             return definition?.comps?.FirstOrDefault(
                 properties => properties != null &&
                     heatPropsType.IsInstanceOfType(properties));
+        }
+
+        private WeaponTypeBinding FindWeaponType(Type candidate)
+        {
+            return candidate == null
+                ? null
+                : weaponTypes.FirstOrDefault(
+                    binding => binding.Type.IsAssignableFrom(candidate));
         }
 
         private object FindHeatComponent(ThingWithComps thing)
@@ -316,6 +331,64 @@ namespace SOS2WeaponReadouts.Compatibility
                 Type.EmptyTypes,
                 null) ??
                 throw new MissingMemberException(type.FullName, name);
+        }
+
+        private sealed class WeaponTypeBinding
+        {
+            private WeaponTypeBinding(
+                Type type,
+                FieldInfo heatComp,
+                PropertyInfo heatToFire,
+                PropertyInfo energyToFire,
+                MethodInfo getGizmos,
+                PropertyInfo connectedToBridge,
+                FieldInfo amplifierCount,
+                FieldInfo spinalComp)
+            {
+                Type = type;
+                HeatComp = heatComp;
+                HeatToFire = heatToFire;
+                EnergyToFire = energyToFire;
+                GetGizmos = getGizmos;
+                ConnectedToBridge = connectedToBridge;
+                AmplifierCount = amplifierCount;
+                SpinalComp = spinalComp;
+            }
+
+            public Type Type { get; }
+            public FieldInfo HeatComp { get; }
+            public PropertyInfo HeatToFire { get; }
+            public PropertyInfo EnergyToFire { get; }
+            public MethodInfo GetGizmos { get; }
+            public PropertyInfo ConnectedToBridge { get; }
+            public FieldInfo AmplifierCount { get; }
+            public FieldInfo SpinalComp { get; }
+
+            public static WeaponTypeBinding CreateSos2(Type type)
+            {
+                return new WeaponTypeBinding(
+                    type,
+                    RequireField(type, "heatComp"),
+                    RequireProperty(type, "HeatToFire"),
+                    RequireProperty(type, "EnergyToFire"),
+                    RequireMethod(type, "GetGizmos"),
+                    RequireProperty(type, "ConnectedToBridge"),
+                    RequireField(type, "AmplifierCount"),
+                    RequireField(type, "spinalComp"));
+            }
+
+            public static WeaponTypeBinding CreateCeSurrogate(Type type)
+            {
+                return new WeaponTypeBinding(
+                    type,
+                    RequireField(type, "heatComp"),
+                    RequireProperty(type, "HeatToFire"),
+                    RequireProperty(type, "EnergyToFire"),
+                    RequireMethod(type, "GetGizmos"),
+                    null,
+                    null,
+                    null);
+            }
         }
     }
 }
