@@ -18,6 +18,10 @@ save data.
   network comparison, and placement previews.
 - Semantic deduplication when SOS2 already supplies a field.
 
+Alt-click the selected-weapon readout, placement preview, or added information-
+card row to open and highlight its setting. The Alt-click does not activate a
+gizmo, place or cancel a designator, or alter targeting.
+
 ## Requirements
 
 - RimWorld 1.6
