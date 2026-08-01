@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using SOS2WeaponReadouts.Domain;
+using SOS2WeaponReadouts.Bootstrap;
+using Spine.UI.ContextualSettings;
 using UnityEngine;
 using Verse;
 
@@ -16,13 +18,11 @@ namespace SOS2WeaponReadouts.UI
         private readonly WeaponReadout readout;
         private readonly ReadoutPresentation presentation;
         private readonly ReadoutLabels labels;
-        private readonly int tooltipId;
 
         internal WeaponReadoutGizmo(
             WeaponReadout readout,
             ReadoutPresentation presentation,
-            ReadoutLabels labels,
-            int tooltipId)
+            ReadoutLabels labels)
         {
             this.readout = readout ??
                 throw new ArgumentNullException(nameof(readout));
@@ -30,7 +30,6 @@ namespace SOS2WeaponReadouts.UI
                 throw new ArgumentNullException(nameof(presentation));
             this.labels = labels ??
                 throw new ArgumentNullException(nameof(labels));
-            this.tooltipId = tooltipId;
             Order = -120f;
         }
 
@@ -51,6 +50,21 @@ namespace SOS2WeaponReadouts.UI
                 width,
                 GizmoHeight);
             var content = outer.ContractedBy(Padding);
+            string tooltip = string.Join(
+                Environment.NewLine,
+                BuildTooltipLines());
+            if (SOS2WeaponReadoutsMod.ContextualSettings?.Bind(
+                outer,
+                ContextualSettingsTarget.Exact(
+                    "readout.live",
+                    "general.header"),
+                ContextualSettingsBindingOptions.WithTooltip(
+                    tooltip,
+                    priority: 10)) == true)
+            {
+                return new GizmoResult(GizmoState.Clear);
+            }
+
             Widgets.DrawWindowBackground(outer);
 
             GameFont previousFont = Text.Font;
@@ -61,6 +75,16 @@ namespace SOS2WeaponReadouts.UI
                 Text.Font = GameFont.Tiny;
                 Text.Anchor = TextAnchor.MiddleLeft;
                 float y = content.y;
+                SOS2WeaponReadoutsMod.ContextualSettings?.Bind(
+                    new Rect(
+                        content.x,
+                        y,
+                        content.width,
+                        DataRowHeight),
+                    ContextualSettingsTarget.Exact(
+                        "readout.network",
+                        "general.header"),
+                    new ContextualSettingsBindingOptions(priority: 20));
                 DrawRow(
                     content,
                     ref y,
@@ -79,12 +103,6 @@ namespace SOS2WeaponReadouts.UI
                     Color.white,
                     DataRowHeight);
 
-                TooltipHandler.TipRegion(
-                    outer,
-                    () => string.Join(
-                        Environment.NewLine,
-                        BuildTooltipLines()),
-                    tooltipId);
             }
             finally
             {

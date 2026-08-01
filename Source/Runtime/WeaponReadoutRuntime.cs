@@ -112,12 +112,14 @@ namespace SOS2WeaponReadouts.Runtime
                         ? line
                         : line.Substring(separator + 2);
                 });
-                entries.Add(new StatDrawEntry(
+                var entry = new StatDrawEntry(
                     StatCategoryDefOf.Weapon_Ranged,
                     "SOS2WR.Readout.Section".Translate(),
                     string.Join(" / ", values),
                     string.Join("\n", lines),
-                    4900));
+                    4900);
+                InformationCardContext.Register(entry);
+                entries.Add(entry);
                 return entries;
             }
             catch (Exception exception)
@@ -156,9 +158,7 @@ namespace SOS2WeaponReadouts.Runtime
                 gizmos.Add(new WeaponReadoutGizmo(
                     readout,
                     CreatePresentation(settings),
-                    ReadoutLocalizer.CreateLabels(readout),
-                    building?.GetHashCode() ??
-                        HarmonyId.GetHashCode()));
+                    ReadoutLocalizer.CreateLabels(readout)));
                 return gizmos;
             }
             catch (Exception exception)

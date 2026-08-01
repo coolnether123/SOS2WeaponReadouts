@@ -1,6 +1,8 @@
 using UnityEngine;
 using Verse;
 using SOS2WeaponReadouts.Runtime;
+using SOS2WeaponReadouts.Bootstrap;
+using Spine.UI.ContextualSettings;
 
 namespace SOS2WeaponReadouts.UI
 {
@@ -25,7 +27,32 @@ namespace SOS2WeaponReadouts.UI
                 return;
             }
 
-            foreach (var line in text.Split('\n'))
+            string[] lines = text.Split('\n');
+            float width = 0f;
+            for (int index = 0; index < lines.Length; index++)
+            {
+                width = Mathf.Max(
+                    width,
+                    Text.CalcSize(lines[index]).x);
+            }
+
+            Rect previewRect = new Rect(
+                curX,
+                curY,
+                Mathf.Min(width + 8f, 480f),
+                Text.LineHeight * lines.Length);
+            if (SOS2WeaponReadoutsMod.ContextualSettings?.Bind(
+                previewRect,
+                ContextualSettingsTarget.Exact(
+                    "readout.placement",
+                    "general.header"),
+                ContextualSettingsBindingOptions.HintOnly(
+                    priority: warning ? 20 : 10)) == true)
+            {
+                return;
+            }
+
+            foreach (var line in lines)
             {
                 DrawTextLine(
                     curX,

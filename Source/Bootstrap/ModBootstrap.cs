@@ -3,7 +3,7 @@ using Verse;
 using SOS2WeaponReadouts.Settings;
 using SOS2WeaponReadouts.Runtime;
 using Spine.Api;
-using Spine.UI.WidgetExtensions;
+using Spine.UI.ContextualSettings;
 
 namespace SOS2WeaponReadouts.Bootstrap
 {
@@ -12,19 +12,34 @@ namespace SOS2WeaponReadouts.Bootstrap
         public static SOS2WeaponReadoutsMod Instance { get; private set; }
 
         public SOS2WeaponReadoutsSettings Settings { get; }
+        private readonly SOS2WeaponReadoutsSettingsUi settingsUi =
+            new SOS2WeaponReadoutsSettingsUi();
+        private static IContextualSettingsLease contextualSettingsLease;
 
         public SOS2WeaponReadoutsMod(ModContentPack content)
             : base(content)
         {
             SpineApi.Runtime.Require(new SpineRequirement(
                 "CoolNether123.SOS2WeaponReadouts",
-                new SemanticVersion(1, 0, 0),
-                SpineCapability.Settings));
+                new SemanticVersion(1, 1, 0),
+                SpineCapability.Settings |
+                SpineCapability.ContextualSettings));
 
             Instance = this;
             Settings = GetSettings<SOS2WeaponReadoutsSettings>();
+            if (contextualSettingsLease == null)
+            {
+                contextualSettingsLease = SpineApi.ContextualSettings.Acquire(
+                    "CoolNether123.SOS2WeaponReadouts",
+                    this,
+                    settingsUi.Drawer,
+                    Settings);
+            }
             WeaponReadoutRuntime.Initialize(content);
         }
+
+        internal static IContextualSettingsLease ContextualSettings =>
+            contextualSettingsLease;
 
         public override string SettingsCategory()
         {
@@ -33,36 +48,7 @@ namespace SOS2WeaponReadouts.Bootstrap
 
         public override void DoSettingsWindowContents(Rect inRect)
         {
-            var listing = new Listing_Standard();
-            listing.Begin(inRect);
-            RimworldSettingsWidgets.SectionHeader(
-                listing,
-                "SOS2WR.Settings.General".Translate());
-            listing.CheckboxLabeled(
-                "SOS2WR.Settings.Enabled".Translate(),
-                ref Settings.FeatureEnabled,
-                "SOS2WR.Settings.Enabled.Tooltip".Translate());
-            listing.CheckboxLabeled(
-                "SOS2WR.Settings.Descriptions".Translate(),
-                ref Settings.ShowInDescriptions);
-            listing.CheckboxLabeled(
-                "SOS2WR.Settings.Inspect".Translate(),
-                ref Settings.ShowSelectedWeaponReadout);
-            listing.CheckboxLabeled(
-                "SOS2WR.Settings.Electrical".Translate(),
-                ref Settings.ShowElectricalDraw);
-            listing.CheckboxLabeled(
-                "SOS2WR.Settings.Network".Translate(),
-                ref Settings.ShowNetworkComparison);
-            listing.CheckboxLabeled(
-                "SOS2WR.Settings.Placement".Translate(),
-                ref Settings.ShowPlacementWarnings);
-
-            RimworldSettingsWidgets.SectionHeader(
-                listing,
-                "SOS2WR.Settings.Compatibility".Translate());
-            listing.Label(WeaponReadoutRuntime.CompatibilitySummary);
-            listing.End();
+            settingsUi.Draw(inRect, Settings);
         }
 
         public override void WriteSettings()
