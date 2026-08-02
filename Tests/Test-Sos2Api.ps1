@@ -126,10 +126,9 @@ try
     {
         Assert-Member $types.Turret $name Property
     }
-    Assert-Member $types.Turret 'GetGizmos' Method
-
     Assert-Member $types.HeatComp 'myNet' Field
     Assert-Member $types.HeatComp 'Props' Property
+    Assert-Member $types.HeatComp 'CompInspectStringExtra' Method
     Assert-Member $types.HeatProperties 'heatPerPulse' Field
     Assert-Member $types.HeatProperties 'energyToFire' Field
 
@@ -164,7 +163,6 @@ try
         Assert-Member $ceType 'heatComp' Field
         Assert-Member $ceType 'HeatToFire' Property
         Assert-Member $ceType 'EnergyToFire' Property
-        Assert-Member $ceType 'GetGizmos' Method
         Write-Output (
             'PASS: Combat Extended SOS2 surrogate exposes the reflected ' +
             'weapon adapter shape; assemblySha256=' +

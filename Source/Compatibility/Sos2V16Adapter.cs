@@ -48,10 +48,14 @@ namespace SOS2WeaponReadouts.Compatibility
                     ceSurrogateType));
             }
             weaponTypes = bindings;
-            TurretGizmosMethods = bindings
-                .Select(binding => binding.GetGizmos)
-                .Distinct()
-                .ToList();
+            HeatInspectStringMethod = heatCompType.GetMethod(
+                "CompInspectStringExtra",
+                BindingFlags.Public |
+                BindingFlags.NonPublic |
+                BindingFlags.Instance,
+                null,
+                Type.EmptyTypes,
+                null);
 
             heatCompNetwork = RequireField(heatCompType, "myNet");
             heatCompProps = RequireProperty(heatCompType, "Props");
@@ -82,7 +86,7 @@ namespace SOS2WeaponReadouts.Compatibility
 
         public CompatibilityStatus Status { get; }
 
-        public IReadOnlyList<MethodInfo> TurretGizmosMethods { get; }
+        public MethodInfo HeatInspectStringMethod { get; }
 
         public bool IsWeaponDefinition(ThingDef definition)
         {
@@ -320,19 +324,6 @@ namespace SOS2WeaponReadouts.Compatibility
                 throw new MissingMemberException(type.FullName, name);
         }
 
-        private static MethodInfo RequireMethod(Type type, string name)
-        {
-            return type.GetMethod(
-                name,
-                BindingFlags.Public |
-                BindingFlags.NonPublic |
-                BindingFlags.Instance,
-                null,
-                Type.EmptyTypes,
-                null) ??
-                throw new MissingMemberException(type.FullName, name);
-        }
-
         private sealed class WeaponTypeBinding
         {
             private WeaponTypeBinding(
@@ -340,7 +331,6 @@ namespace SOS2WeaponReadouts.Compatibility
                 FieldInfo heatComp,
                 PropertyInfo heatToFire,
                 PropertyInfo energyToFire,
-                MethodInfo getGizmos,
                 PropertyInfo connectedToBridge,
                 FieldInfo amplifierCount,
                 FieldInfo spinalComp)
@@ -349,7 +339,6 @@ namespace SOS2WeaponReadouts.Compatibility
                 HeatComp = heatComp;
                 HeatToFire = heatToFire;
                 EnergyToFire = energyToFire;
-                GetGizmos = getGizmos;
                 ConnectedToBridge = connectedToBridge;
                 AmplifierCount = amplifierCount;
                 SpinalComp = spinalComp;
@@ -359,7 +348,6 @@ namespace SOS2WeaponReadouts.Compatibility
             public FieldInfo HeatComp { get; }
             public PropertyInfo HeatToFire { get; }
             public PropertyInfo EnergyToFire { get; }
-            public MethodInfo GetGizmos { get; }
             public PropertyInfo ConnectedToBridge { get; }
             public FieldInfo AmplifierCount { get; }
             public FieldInfo SpinalComp { get; }
@@ -371,7 +359,6 @@ namespace SOS2WeaponReadouts.Compatibility
                     RequireField(type, "heatComp"),
                     RequireProperty(type, "HeatToFire"),
                     RequireProperty(type, "EnergyToFire"),
-                    RequireMethod(type, "GetGizmos"),
                     RequireProperty(type, "ConnectedToBridge"),
                     RequireField(type, "AmplifierCount"),
                     RequireField(type, "spinalComp"));
@@ -384,7 +371,6 @@ namespace SOS2WeaponReadouts.Compatibility
                     RequireField(type, "heatComp"),
                     RequireProperty(type, "HeatToFire"),
                     RequireProperty(type, "EnergyToFire"),
-                    RequireMethod(type, "GetGizmos"),
                     null,
                     null,
                     null);

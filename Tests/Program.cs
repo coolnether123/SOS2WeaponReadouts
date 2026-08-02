@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using SOS2WeaponReadouts.Domain;
 using SOS2WeaponReadouts.TestFixture.Domain;
+using static RimWorld.ModTestSupport.Test;
 
 namespace SOS2WeaponReadouts.Tests
 {
@@ -41,25 +42,27 @@ namespace SOS2WeaponReadouts.Tests
 
         private static int Main()
         {
-            TestSos2ShotFormula();
-            TestAmplifiedShotFormula();
-            TestDefinitionReadout();
-            TestExistingSos2FieldsAreNotDuplicated();
-            TestSeparateNetworkAndEnergyLinesDoNotHideHeat();
-            TestExistingSos2ConnectionIsNotDuplicated();
-            TestLocalizedSos2FieldsAreNotDuplicated();
-            TestDisconnectedWarnings();
-            TestCapacityComparison();
-            TestInsufficientCapacity();
-            TestUnavailableSpinalValues();
-            TestPresentationToggles();
-            TestNumberFormatting();
-            TestSuccessfulFiringProof();
-            TestSuppressedFiringProof();
-            TestFiringProofRejectsResourceMismatch();
-            Console.WriteLine(
-                "PASS: 16 SOS2 weapon readout contracts");
-            return 0;
+            Start("SOS2 Weapon Readouts contracts");
+            Run("SOS2 shot formula", TestSos2ShotFormula);
+            Run("amplified shot formula", TestAmplifiedShotFormula);
+            Run("definition readout", TestDefinitionReadout);
+            Run("existing fields are not duplicated", TestExistingSos2FieldsAreNotDuplicated);
+            Run("network and energy lines preserve heat", TestSeparateNetworkAndEnergyLinesDoNotHideHeat);
+            Run("connection is not duplicated", TestExistingSos2ConnectionIsNotDuplicated);
+            Run("localized fields are not duplicated", TestLocalizedSos2FieldsAreNotDuplicated);
+            Run("disconnected warnings", TestDisconnectedWarnings);
+            Run("capacity comparison", TestCapacityComparison);
+            Run("network line merges heat", TestNetworkLineMergesHeatPerShot);
+            Run("compact suffix suppresses duplicates", TestCompactSuffixSuppressesDuplicate);
+            Run("three digit inspect budget", TestThreeDigitInspectLineBudget);
+            Run("insufficient capacity", TestInsufficientCapacity);
+            Run("unavailable spinal values", TestUnavailableSpinalValues);
+            Run("presentation toggles", TestPresentationToggles);
+            Run("number formatting", TestNumberFormatting);
+            Run("successful firing proof", TestSuccessfulFiringProof);
+            Run("suppressed firing proof", TestSuppressedFiringProof);
+            Run("resource mismatch proof", TestFiringProofRejectsResourceMismatch);
+            return Finish();
         }
 
         private static void TestSos2ShotFormula()
@@ -95,9 +98,9 @@ namespace SOS2WeaponReadouts.Tests
                 FullPresentation,
                 Labels,
                 true);
-            Contains(text, "SOS2 weapon costs");
-            Contains(text, "Heat generated per shot: 12 HU");
-            Contains(text, "Electrical draw per shot: 0 Wd");
+            ContainsActual(text, "SOS2 weapon costs");
+            ContainsActual(text, "Heat generated per shot: 12 HU");
+            ContainsActual(text, "Electrical draw per shot: 0 Wd");
         }
 
         private static void TestExistingSos2FieldsAreNotDuplicated()
@@ -142,7 +145,7 @@ namespace SOS2WeaponReadouts.Tests
                 readout,
                 FullPresentation,
                 Labels);
-            Contains(
+            ContainsActual(
                 string.Join("\n", lines),
                 "Heat generated per shot: 30 HU");
             False(lines.Any(
@@ -162,7 +165,7 @@ namespace SOS2WeaponReadouts.Tests
                 readout,
                 FullPresentation,
                 Labels);
-            Contains(
+            ContainsActual(
                 string.Join("\n", lines),
                 "Not connected to a thermal network.");
         }
@@ -222,9 +225,74 @@ namespace SOS2WeaponReadouts.Tests
                 readout,
                 FullPresentation,
                 Labels);
-            Contains(
+            ContainsActual(
                 string.Join("\n", lines),
                 "Current network heat: 20 / 100 HU");
+        }
+
+        private static void TestNetworkLineMergesHeatPerShot()
+        {
+            var readout = new WeaponReadout(
+                30f,
+                80f,
+                true,
+                new NetworkReadout(true, true, 100f, 20f));
+            var lines = ReadoutFormatter.BuildMissingLines(
+                string.Empty,
+                readout,
+                new ReadoutPresentation
+                {
+                    ShowElectricalDraw = false,
+                    ShowNetworkComparison = true
+                },
+                Labels);
+            Equal(1, lines.Count, "combined network line count");
+            Equal(
+                "Current network heat: 20 / 100 HU (+30/shot)",
+                lines[0],
+                "combined network heat");
+        }
+
+        private static void TestCompactSuffixSuppressesDuplicate()
+        {
+            const string existing =
+                "Grid heat stored/capacity: 20 HU / 100 HU " +
+                "(+30/shot)";
+            var readout = new WeaponReadout(
+                30f,
+                80f,
+                true,
+                new NetworkReadout(true, true, 100f, 20f));
+            var lines = ReadoutFormatter.BuildMissingLines(
+                existing,
+                readout,
+                FullPresentation,
+                Labels);
+            False(
+                lines.Any(line => line.Contains("Heat generated")),
+                "compact per-shot suffix must suppress duplicate heat");
+        }
+
+        private static void TestThreeDigitInspectLineBudget()
+        {
+            var readout = new WeaponReadout(
+                999f,
+                0f,
+                true,
+                new NetworkReadout(true, true, 999f, 999f));
+            string suffix = ReadoutFormatter.FormatHeatPerShotSuffix(
+                readout,
+                Labels);
+            Equal("(+999/shot)", suffix, "three-digit suffix");
+            False(
+                suffix.Length > "(+30 HU/shot)".Length,
+                "three-digit suffix exceeded the proven live suffix width");
+
+            const string sos2ThreeDigitLine =
+                "Grid heat stored/capacity: 999 HU / 999 HU (999)";
+            False(
+                (sos2ThreeDigitLine + " " + suffix).Length > 61,
+                "three-digit SOS2 inspect line exceeded its character budget");
         }
 
         private static void TestInsufficientCapacity()
@@ -239,10 +307,10 @@ namespace SOS2WeaponReadouts.Tests
                 readout,
                 FullPresentation,
                 Labels);
-            Contains(
+            ContainsActual(
                 string.Join("\n", lines),
                 "Insufficient thermal capacity for one shot.");
-            Contains(
+            ContainsActual(
                 string.Join("\n", lines),
                 "Current network heat: 80 / 100 HU");
         }
@@ -284,7 +352,7 @@ namespace SOS2WeaponReadouts.Tests
                 minimal,
                 Labels);
             Equal(1, lines.Count, "minimal line count");
-            Contains(lines[0], "Heat generated per shot");
+            ContainsActual(lines[0], "Heat generated per shot");
         }
 
         private static void TestNumberFormatting()
@@ -328,7 +396,7 @@ namespace SOS2WeaponReadouts.Tests
 
         private static void TestFiringProofRejectsResourceMismatch()
         {
-            Contains(
+            ContainsActual(
                 FiringProofEvaluator.ValidateSuccessfulFire(
                     0f,
                     29f,
@@ -342,38 +410,5 @@ namespace SOS2WeaponReadouts.Tests
                 "Heat delta");
         }
 
-        private static void Equal<T>(
-            T expected,
-            T actual,
-            string label)
-        {
-            if (!Equals(expected, actual))
-            {
-                throw new InvalidOperationException(
-                    label + ": expected " + expected +
-                    ", got " + actual);
-            }
-        }
-
-        private static void Contains(string text, string expected)
-        {
-            if (text == null ||
-                text.IndexOf(
-                    expected,
-                    StringComparison.Ordinal) < 0)
-            {
-                throw new InvalidOperationException(
-                    "Expected text not found: " + expected +
-                    "\nActual: " + text);
-            }
-        }
-
-        private static void False(bool value, string message)
-        {
-            if (value)
-            {
-                throw new InvalidOperationException(message);
-            }
-        }
     }
 }

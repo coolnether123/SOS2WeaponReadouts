@@ -23,9 +23,9 @@
   "releasePackage": {
     "result": "RWT-BUILD-RELEASE-PACKAGE-VALID",
     "packagerImplementationCommit": "af5c9ee31a1b934a3f2d655d3d65af2427ada251",
-    "manifestPath": "A:\\Dev\\RimWorld\\Releases\\1.6\\2026-07-30-program-final\\release-manifest.json",
+    "manifestPath": "<release-root>\\1.6\\2026-07-30-program-final\\release-manifest.json",
     "manifestAuthority": "The central manifest records its own final source commit, tooling commit, and SHA-256 through phase-a-status.json; those self-referential values are not duplicated in this repository.",
-    "destinationRoot": "A:\\Dev\\RimWorld\\Releases\\1.6\\2026-07-30-program-final\\SOS2WeaponReadouts",
+    "destinationRoot": "<release-root>\\1.6\\2026-07-30-program-final\\SOS2WeaponReadouts",
     "includedPaths": [
       "About",
       "1.6\\Assemblies\\SOS2WeaponReadouts.dll",

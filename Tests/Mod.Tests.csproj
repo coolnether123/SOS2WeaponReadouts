@@ -5,6 +5,7 @@
     <AssemblyName>SOS2WeaponReadouts.Tests</AssemblyName>
     <RootNamespace>SOS2WeaponReadouts.Tests</RootNamespace>
     <Deterministic>true</Deterministic>
+    <RwtTestSupportProject Condition="'$(RwtTestSupportProject)' == ''">$(MSBuildThisFileDirectory)..\..\..\Worktrees\RimWorld-Tooling\phase-a\test-support\RimWorld.ModTestSupport\RimWorld.ModTestSupport.csproj</RwtTestSupportProject>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="..\Source\Domain\WeaponReadout.cs"
@@ -19,5 +20,8 @@
              Link="Domain\ReadoutFormatter.cs" />
     <Compile Include="..\Developer\SOS2WeaponReadouts.TestFixture\Source\Domain\FiringProofEvaluator.cs"
              Link="Domain\FiringProofEvaluator.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="$(RwtTestSupportProject)" />
   </ItemGroup>
 </Project>

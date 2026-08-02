@@ -15,20 +15,20 @@ Risk controls:
 - Existing heat/electrical entries are detected line by line before appending.
 - Exceptions are caught at the runtime boundary and logged once.
 
-## SaveOurShip2.Building_ShipTurret.GetGizmos
+## SaveOurShip2.CompShipHeat.CompInspectStringExtra
 
-Reason: the standard selected-object gizmo area can show live weapon values
-without lengthening RimWorld's bottom-left inspect panel. The target is
-resolved by the validated adapter, so an incompatible API prevents patch
-installation.
+Reason: SOS2 already owns the selected weapon's live network-heat line. A
+postfix adds only the missing compact per-shot suffix to that first line. The
+target is resolved by the validated adapter, so an incompatible API prevents
+patch installation.
 
 Risk controls:
 
 - Postfix only.
-- SOS2's existing gizmos remain authoritative and in their original order.
-- One fixed-width readout gizmo is appended only for a recognized weapon.
-- It reports current network heat/capacity and per-shot costs, never projected
-  after-shot heat.
+- Non-weapon heat components return their original text unchanged.
+- Native and CE-surrogate weapons share the same adapter readout path.
+- The suffix contains per-shot heat only, reuses the line's HU unit, and adds
+  no newline.
 - No firing, ticking, power, heat, or placement method is patched.
 
 Placement integration uses RimWorld's standard `PlaceWorker` definition list,

@@ -13,6 +13,8 @@ namespace SOS2WeaponReadouts.Domain
 
         public string HeatPerShot { get; set; }
 
+        public string HeatPerShotCompact { get; set; }
+
         public string ElectricalDrawPerShot { get; set; }
 
         public string ValuesUnavailable { get; set; }

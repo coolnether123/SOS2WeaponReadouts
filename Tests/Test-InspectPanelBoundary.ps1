@@ -7,9 +7,16 @@ $sourceRoot = Join-Path $root 'Source'
 $runtimePath = Join-Path `
     $root `
     'Source\Runtime\WeaponReadoutRuntime.cs'
-$gizmoPath = Join-Path `
+$inspectPatchPath = Join-Path `
     $root `
-    'Source\UI\WeaponReadoutGizmo.cs'
+    'Source\Patches\HeatInspectStringPatch.cs'
+$adapterPath = Join-Path `
+    $root `
+    'Source\Compatibility\Sos2V16Adapter.cs'
+$gizmoPath = Join-Path $root 'Source\UI\WeaponReadoutGizmo.cs'
+$gizmoPatchPath = Join-Path `
+    $root `
+    'Source\Patches\TurretGizmosPatch.cs'
 $languagePath = Join-Path `
     $root `
     'Languages\English\Keyed\SOS2WeaponReadouts.xml'
@@ -20,60 +27,52 @@ $productionSource = @(
             [System.IO.File]::ReadAllText($_.FullName)
         }) -join [Environment]::NewLine
 $runtimeSource = [System.IO.File]::ReadAllText($runtimePath)
-$gizmoSource = [System.IO.File]::ReadAllText($gizmoPath)
+$inspectPatchSource = [System.IO.File]::ReadAllText($inspectPatchPath)
+$adapterSource = [System.IO.File]::ReadAllText($adapterPath)
+$inspectMethodSource = [regex]::Match(
+    $runtimeSource,
+    'AppendHeatPerShotToInspectString[\s\S]*?' +
+    '(?=public\s+static\s+bool\s+TryCreatePlacementReadout)').Value
 $languageSource = [System.IO.File]::ReadAllText($languagePath)
 
 $failures = [System.Collections.Generic.List[string]]::new()
 if ($productionSource -match
-    'GetInspectString|AppendInspectReadout|TurretInspectPatch')
+    '\bGetInspectString\b|AppendInspectReadout|TurretInspectPatch')
 {
     $failures.Add(
-        'Built-weapon readouts must not extend the inspect string.')
+        'Built-weapon readouts must not patch Thing.GetInspectString.')
 }
-if ($productionSource -notmatch
-    'TurretGizmosMethod|AppendSelectedWeaponGizmo')
+if ((Test-Path -LiteralPath $gizmoPath) -or
+    (Test-Path -LiteralPath $gizmoPatchPath) -or
+    $productionSource -match
+    'TurretGizmosMethods|AppendSelectedWeaponGizmo|WeaponReadoutGizmo')
 {
     $failures.Add(
-        'The SOS2 turret gizmo integration patch is missing.')
-}
-if ($gizmoSource -notmatch
-    'override\s+GizmoResult\s+GizmoOnGUI')
-{
-    $failures.Add(
-        'The selected-weapon readout must render as a legal GizmoOnGUI.')
-}
-if ($gizmoSource -notmatch
-    'DataRowHeight\s*=\s*(?<height>[0-9.]+)f' -or
-    [float]$Matches['height'] -lt 18)
-{
-    $failures.Add(
-        'Gizmo data rows must leave at least 18 pixels for font descenders.')
-}
-if ($gizmoSource -match
-    'labels\.ElectricalDrawPerShot|readout\.ElectricalDrawPerShot')
-{
-    $failures.Add(
-        'The selected-weapon gizmo must not repeat SOS2 electrical draw.')
-}
-if ($gizmoSource -notmatch
-    'ShowElectricalDraw\s*=\s*false')
-{
-    $failures.Add(
-        'The selected-weapon tooltip must suppress duplicate electrical draw.')
-}
-if ($gizmoSource -match
-    'Gizmo\.Title|SOS2 weapon readout(?!s)' -or
-    $languageSource -match
-    'SOS2WR\.Gizmo\.Title|>SOS2 weapon readout<')
-{
-    $failures.Add(
-        'The selected SOS2 gun must not repeat a redundant mod title.')
+        'The removed selected-weapon gizmo path must not return.')
 }
 if ($runtimeSource -notmatch
-    'AppendSelectedWeaponGizmo')
+    'AppendHeatPerShotToInspectString' -or
+    $inspectPatchSource -notmatch
+    'HeatInspectStringMethod' -or
+    $adapterSource -notmatch
+    'CompInspectStringExtra')
 {
     $failures.Add(
-        'Runtime integration does not append the selected-weapon gizmo.')
+        'The native SOS2 heat line integration is missing.')
+}
+if ($runtimeSource -notmatch
+    'ExecuteWhenFinished\s*\(\s*\(\)\s*=>' -or
+    $runtimeSource -notmatch
+    'ExecuteWhenFinished[\s\S]{0,500}PatchAll')
+{
+    $failures.Add(
+        'Harmony patching must wait for the main-thread long-event boundary.')
+}
+if ($inspectMethodSource -match
+    'Environment\.NewLine|"\\n"|"\\r"')
+{
+    $failures.Add(
+        'The selected-weapon suffix must not add an inspect-panel line.')
 }
 if ($languageSource -match
     'HeatAfterShot|Network heat after shot')
@@ -87,6 +86,14 @@ if ($languageSource -notmatch
     $failures.Add(
         'The current network heat label is missing.')
 }
+if ($languageSource -notmatch
+    '<SOS2WR\.Readout\.HeatPerShotCompact>\(\+\{0\}/shot\)' -or
+    $languageSource -match
+    'HeatPerShotCompact>[^<]*HU')
+{
+    $failures.Add(
+        'The compact suffix must reuse the HU context and stay width-bounded.')
+}
 
 if ($failures.Count -gt 0)
 {
@@ -98,5 +105,5 @@ if ($failures.Count -gt 0)
 }
 
 Write-Output (
-    'PASS: built-weapon readouts use a current-heat gizmo without ' +
-    'extending the inspect panel.')
+    'PASS: selected weapons decorate SOS2''s heat line with a compact ' +
+    'per-shot suffix; the old gizmo path is absent.')

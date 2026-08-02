@@ -22,8 +22,8 @@ namespace SOS2WeaponReadouts.TestFixture
             "CoolNether123.SOS2WeaponReadouts.TestFixture";
         private readonly List<Thing> spawned = new List<Thing>();
         private Building_ShipBridge connectedCore;
-        private Building_ShipTurret connectedTurret;
-        private Building_ShipTurret disconnectedTurret;
+        private TestTurretHandle connectedTurret;
+        private TestTurretHandle disconnectedTurret;
         private string lastReport = "fixture has not run";
         private FixtureStage stage;
         private int stageFrames;
@@ -304,10 +304,11 @@ namespace SOS2WeaponReadouts.TestFixture
                     RequireDef("Ship_ComputerCore"),
                     layout.Core,
                     map);
-            connectedTurret = (Building_ShipTurret)SpawnBuilding(
-                RequireDef("ShipTurret_Laser"),
-                layout.ConnectedTurret,
-                map);
+            connectedTurret = TestTurretHandle.Create(
+                SpawnBuilding(
+                    RequireDef("ShipTurret_Laser"),
+                    layout.ConnectedTurret,
+                    map));
             SpawnBuilding(
                 RequireDef("ShipHeatsink"),
                 layout.ConnectedSink,
@@ -317,11 +318,11 @@ namespace SOS2WeaponReadouts.TestFixture
                 layout.ConnectedCapacitor,
                 map);
 
-            disconnectedTurret =
-                (Building_ShipTurret)SpawnBuilding(
+            disconnectedTurret = TestTurretHandle.Create(
+                SpawnBuilding(
                     RequireDef("ShipTurret_Laser"),
                     layout.DisconnectedTurret,
-                    map);
+                    map));
             SpawnBuilding(
                 RequireDef("ShipHeatsink"),
                 layout.DisconnectedSink,
@@ -354,8 +355,8 @@ namespace SOS2WeaponReadouts.TestFixture
                     "disconnected turret unexpectedly registered a bridge.");
             }
 
-            connectedTurret.holdFire = false;
-            connectedTurret.burstCooldownTicksLeft = 0;
+            connectedTurret.SetHoldFire(false);
+            connectedTurret.SetBurstCooldown(0);
             FiringProbe.Reset(connectedTurret);
             connectedDisplayBefore =
                 DescribeReadout(connectedTurret);
@@ -369,9 +370,9 @@ namespace SOS2WeaponReadouts.TestFixture
             return HasReadyNetwork(connectedTurret) &&
                 HasReadyNetwork(disconnectedTurret) &&
                 ReferenceEquals(
-                    connectedTurret.heatComp.myNet,
+                    connectedTurret.HeatComp.myNet,
                     connectedTurret
-                        .heatComp
+                        .HeatComp
                         .myNet
                         .AICores
                         .FirstOrDefault()
@@ -380,27 +381,27 @@ namespace SOS2WeaponReadouts.TestFixture
         }
 
         private static bool HasReadyNetwork(
-            Building_ShipTurret turret)
+            TestTurretHandle turret)
         {
             return turret != null &&
                 turret.Spawned &&
-                turret.heatComp?.myNet != null &&
-                turret.heatComp.myNet.StorageCapacity >= 200f &&
-                turret.powerComp?.PowerNet != null &&
-                turret.powerComp.PowerNet.batteryComps.Any();
+                turret.HeatComp?.myNet != null &&
+                turret.HeatComp.myNet.StorageCapacity >= 200f &&
+                turret.PowerComp?.PowerNet != null &&
+                turret.PowerComp.PowerNet.batteryComps.Any();
         }
 
         private static string DescribeNetwork(
             string name,
-            Building_ShipTurret turret)
+            TestTurretHandle turret)
         {
             if (turret == null)
             {
                 return name + "={turret:null}";
             }
 
-            ShipHeatNet heat = turret.heatComp?.myNet;
-            PowerNet power = turret.powerComp?.PowerNet;
+            ShipHeatNet heat = turret.HeatComp?.myNet;
+            PowerNet power = turret.PowerComp?.PowerNet;
             return name + "={" +
                 "spawned:" + turret.Spawned +
                 ",heat:" + (heat != null) +
@@ -457,13 +458,13 @@ namespace SOS2WeaponReadouts.TestFixture
 
         private void PrepareInsufficientPowerFire()
         {
-            connectedTurret.holdFire = true;
+            connectedTurret.SetHoldFire(true);
             connectedTurret.ResetForcedTarget();
-            connectedTurret.burstCooldownTicksLeft = 0;
+            connectedTurret.SetBurstCooldown(0);
             ChargeToEnergy(
                 connectedTurret,
                 connectedTurret.EnergyToFire - 1f);
-            connectedTurret.holdFire = false;
+            connectedTurret.SetHoldFire(false);
             FiringProbe.Reset(connectedTurret);
             connectedTurret.OrderAttack(
                 new LocalTargetInfo(
@@ -505,14 +506,14 @@ namespace SOS2WeaponReadouts.TestFixture
         private void PrepareDisconnectedFire()
         {
             Charge(disconnectedTurret, 1f);
-            disconnectedTurret.holdFire = false;
-            disconnectedTurret.burstCooldownTicksLeft = 0;
+            disconnectedTurret.SetHoldFire(false);
+            disconnectedTurret.SetBurstCooldown(0);
             FiringProbe.Reset(disconnectedTurret);
             disconnectedHeatBefore =
-                disconnectedTurret.heatComp.myNet.StorageUsed;
+                disconnectedTurret.HeatComp.myNet.StorageUsed;
             disconnectedPowerBefore =
                 disconnectedTurret
-                    .powerComp
+                    .PowerComp
                     .PowerNet
                     .CurrentStoredEnergy();
             disconnectedTurret.OrderAttack(
@@ -526,11 +527,11 @@ namespace SOS2WeaponReadouts.TestFixture
                 FiringProbe.Snapshot(disconnectedTurret);
             record.HeatBefore = disconnectedHeatBefore;
             record.HeatAfter =
-                disconnectedTurret.heatComp.myNet.StorageUsed;
+                disconnectedTurret.HeatComp.myNet.StorageUsed;
             record.PowerBefore = disconnectedPowerBefore;
             record.PowerAfter =
                 disconnectedTurret
-                    .powerComp
+                    .PowerComp
                     .PowerNet
                     .CurrentStoredEnergy();
             string error =
@@ -565,11 +566,11 @@ namespace SOS2WeaponReadouts.TestFixture
         }
 
         private static string DescribeReadout(
-            Building_ShipTurret turret)
+            TestTurretHandle turret)
         {
             if (WeaponReadoutRuntime.Adapter == null ||
                 !WeaponReadoutRuntime.Adapter.TryReadPlaced(
-                    turret,
+                    turret.Thing,
                     out WeaponReadout readout))
             {
                 return "<unavailable>";
@@ -590,22 +591,22 @@ namespace SOS2WeaponReadouts.TestFixture
         }
 
         private static void Charge(
-            Building_ShipTurret turret,
+            TestTurretHandle turret,
             float percent)
         {
             foreach (CompPowerBattery battery in
-                turret.powerComp.PowerNet.batteryComps)
+                turret.PowerComp.PowerNet.batteryComps)
             {
                 battery.SetStoredEnergyPct(percent);
             }
         }
 
         private static void ChargeToEnergy(
-            Building_ShipTurret turret,
+            TestTurretHandle turret,
             float energy)
         {
             IList<CompPowerBattery> batteries =
-                turret.powerComp.PowerNet.batteryComps;
+                turret.PowerComp.PowerNet.batteryComps;
             float totalCapacity =
                 batteries.Sum(battery =>
                     battery.Props.storedEnergyMax);
@@ -814,7 +815,7 @@ namespace SOS2WeaponReadouts.TestFixture
             report.AppendLine(
                 "shipIndex=" +
                 successful.Turret
-                    .heatComp
+                    .HeatComp
                     .myNet
                     .AICores
                     .First()
@@ -905,7 +906,7 @@ namespace SOS2WeaponReadouts.TestFixture
         {
             public FiringResult(
                 string name,
-                Building_ShipTurret turret,
+                TestTurretHandle turret,
                 ProbeRecord record,
                 string displayBefore,
                 string displayAfter,
@@ -930,7 +931,7 @@ namespace SOS2WeaponReadouts.TestFixture
             public bool ExpectedToFire { get; }
             public bool ConnectedToBridge { get; }
             public bool Active { get; }
-            public Building_ShipTurret Turret { get; }
+            public TestTurretHandle Turret { get; }
         }
 
         private sealed class FixtureLayout

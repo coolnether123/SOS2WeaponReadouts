@@ -60,8 +60,26 @@ namespace SOS2WeaponReadouts.Domain
                 return result;
             }
 
-            if (!ExistingReadoutDetector.HasHeatPerShot(existing) &&
-                !ContainsIgnoreCase(existing, labels.HeatPerShot))
+            bool heatMissing =
+                !ExistingReadoutDetector.HasHeatPerShot(existing) &&
+                !ContainsIgnoreCase(existing, labels.HeatPerShot);
+            var network = readout.Network;
+            bool existingNetworkSurface = network != null &&
+                (network.ThermalNetworkConnected
+                    ? ExistingReadoutDetector.HasCurrentNetworkHeat(
+                        existing) ||
+                      ContainsIgnoreCase(existing, labels.CurrentHeat)
+                    : ExistingReadoutDetector.HasThermalNetworkStatus(
+                        existing) ||
+                      ContainsIgnoreCase(
+                          existing,
+                          labels.ExistingThermalDisconnected));
+            bool mergeHeatIntoNetwork = heatMissing &&
+                presentation.ShowNetworkComparison &&
+                network != null &&
+                !existingNetworkSurface;
+
+            if (heatMissing && !mergeHeatIntoNetwork)
             {
                 result.Add(
                     labels.HeatPerShot + ": " +
@@ -89,8 +107,30 @@ namespace SOS2WeaponReadouts.Domain
                 existing,
                 readout,
                 presentation,
-                labels);
+                labels,
+                mergeHeatIntoNetwork);
             return result;
+        }
+
+        public static string FormatHeatPerShotSuffix(
+            WeaponReadout readout,
+            ReadoutLabels labels)
+        {
+            if (readout == null ||
+                labels == null ||
+                !readout.DynamicValuesAvailable)
+            {
+                return string.Empty;
+            }
+
+            if (!string.IsNullOrWhiteSpace(
+                labels.HeatPerShotCompact))
+            {
+                return labels.HeatPerShotCompact.Trim();
+            }
+
+            return "(+" + FormatNumber(readout.HeatPerShot) +
+                "/shot)";
         }
 
         public static string FormatNumber(float value)
@@ -113,7 +153,8 @@ namespace SOS2WeaponReadouts.Domain
             string existing,
             WeaponReadout readout,
             ReadoutPresentation presentation,
-            ReadoutLabels labels)
+            ReadoutLabels labels,
+            bool mergeHeatIntoNetwork)
         {
             var network = readout.Network;
             if (network == null)
@@ -129,7 +170,14 @@ namespace SOS2WeaponReadouts.Domain
                         existing,
                         labels.ExistingThermalDisconnected))
                 {
-                    AddNonBlank(result, labels.ThermalDisconnected);
+                    AddNonBlank(
+                        result,
+                        labels.ThermalDisconnected +
+                        (mergeHeatIntoNetwork
+                            ? " " + FormatHeatPerShotSuffix(
+                                readout,
+                                labels)
+                            : string.Empty));
                 }
                 return;
             }
@@ -152,11 +200,18 @@ namespace SOS2WeaponReadouts.Domain
                 return;
             }
 
-            result.Add(
+            var networkLine =
                 labels.CurrentHeat + ": " +
                 FormatNumber(network.Used) + " / " +
                 FormatNumber(network.Capacity) + " " +
-                labels.HeatUnits);
+                labels.HeatUnits;
+            if (mergeHeatIntoNetwork)
+            {
+                networkLine += " " + FormatHeatPerShotSuffix(
+                    readout,
+                    labels);
+            }
+            result.Add(networkLine);
 
             if (network.Used + readout.HeatPerShot >
                     network.Capacity + 0.001f &&

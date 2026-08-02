@@ -1,60 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFramework>net48</TargetFramework>
-    <LangVersion>latest</LangVersion>
+    <RwtIsRimWorldMod>true</RwtIsRimWorldMod>
+    <TargetFramework>net472</TargetFramework>
     <AssemblyName>SOS2WeaponReadouts</AssemblyName>
     <RootNamespace>SOS2WeaponReadouts</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Deterministic>true</Deterministic>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <OutputPath>..\1.6\Assemblies\</OutputPath>
+    <RwtUseHarmony>true</RwtUseHarmony>
+    <RwtUseSpine>true</RwtUseSpine>
+    <RwtUseUnityImGui>true</RwtUseUnityImGui>
   </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="Assembly-CSharp">
-      <HintPath>$(RimWorldManagedDir)\Assembly-CSharp.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.CoreModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.CoreModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.IMGUIModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.IMGUIModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="UnityEngine.TextRenderingModule">
-      <HintPath>$(RimWorldManagedDir)\UnityEngine.TextRenderingModule.dll</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="0Harmony">
-      <HintPath>$(RwtDependencyHarmony)</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="Spine">
-      <HintPath>$(RwtDependencySpine)</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="Vehicles">
-      <HintPath>$(RwtDependencyVehicleFramework)</HintPath>
-      <Private>false</Private>
-    </Reference>
-    <Reference Include="ShipsHaveInsides">
-      <HintPath>$(RwtDependencySaveOurShip2)</HintPath>
-      <Private>false</Private>
-    </Reference>
-  </ItemGroup>
-  <Target Name="RequireResolvedDependencies" BeforeTargets="ResolveReferences">
-    <Error
-      Condition="'$(RwtDependencyHarmony)' == '' or !Exists('$(RwtDependencyHarmony)')"
-      Text="RwtDependencyHarmony must resolve through RimWorld-Tooling." />
-    <Error
-      Condition="'$(RwtDependencySpine)' == '' or !Exists('$(RwtDependencySpine)')"
-      Text="RwtDependencySpine must resolve through RimWorld-Tooling." />
-    <Error
-      Condition="'$(RwtDependencyVehicleFramework)' == '' or !Exists('$(RwtDependencyVehicleFramework)')"
-      Text="RwtDependencyVehicleFramework must resolve through RimWorld-Tooling." />
-    <Error
-      Condition="'$(RwtDependencySaveOurShip2)' == '' or !Exists('$(RwtDependencySaveOurShip2)')"
-      Text="RwtDependencySaveOurShip2 must resolve through RimWorld-Tooling." />
-  </Target>
 </Project>

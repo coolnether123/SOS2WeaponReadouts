@@ -19,7 +19,10 @@ dev-run sos2wr-firing-fixture cleanup
 `run` is asynchronous: poll `status` until it returns `result=PASS`. It builds
 a real SOS2 ship and connected/disconnected laser networks, fires through the
 ordinary SOS2 attack path, observes burst/cast/projectile calls, and verifies
-exact heat and power deltas. `cleanup` must report
+exact heat and power deltas. The same fixture accepts SOS2's native turret and
+Combat Extended's optional `Building_ShipTurretCE` surrogate through their
+shared heat, power, verb, and targeting shape; the developer DLL does not take
+a build-time dependency on Combat Extended. `cleanup` must report
 `cacheRemoved=True; shipsRemaining=0; cleanupErrors=0` before the lane stops.
 
 `select-placement` selects RimWorld's ordinary build designator for the

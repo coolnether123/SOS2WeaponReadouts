@@ -13,6 +13,10 @@ namespace SOS2WeaponReadouts.UI
                 Section = "SOS2WR.Readout.Section".Translate(),
                 HeatPerShot =
                     "SOS2WR.Readout.HeatPerShot".Translate(),
+                HeatPerShotCompact =
+                    "SOS2WR.Readout.HeatPerShotCompact".Translate(
+                        ReadoutFormatter.FormatNumber(
+                            readout.HeatPerShot)),
                 ElectricalDrawPerShot =
                     "SOS2WR.Readout.ElectricalDraw".Translate(),
                 ValuesUnavailable =

@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Reflection;
 using SOS2WeaponReadouts.Domain;
 using Verse;
@@ -14,8 +13,7 @@ namespace SOS2WeaponReadouts.Compatibility
 
         public CompatibilityStatus Status { get; }
 
-        public IReadOnlyList<MethodInfo> TurretGizmosMethods =>
-            System.Array.Empty<MethodInfo>();
+        public MethodInfo HeatInspectStringMethod => null;
 
         public bool IsWeaponDefinition(ThingDef definition)
         {

@@ -19,7 +19,7 @@ are pure C# and covered by the standalone test executable.
 `Runtime/WeaponReadoutRuntime.cs` coordinates settings, adapter calls,
 localization, and error isolation. Every runtime entry point is demand-driven:
 definition stats are evaluated when an info card enumerates them, selected
-weapon values are evaluated when RimWorld requests its gizmos, and placement values are
+weapon values are evaluated when SOS2 builds its heat-component inspect text, and placement values are
 evaluated only while its designator is active. No map, world, or per-frame
 component runs while the UI is closed.
 
@@ -27,12 +27,8 @@ component runs while the UI is closed.
 
 - `ThingDef.SpecialDisplayStats` appends one weapon-stat row only for
   definitions accepted by the SOS2 adapter.
-- SOS2 `Building_ShipTurret.GetGizmos` appends one compact selected-weapon
-  readout without changing the inspect panel.
-
-`UI/WeaponReadoutGizmo.cs` shows current heat/capacity, heat per shot, and
-optional electrical draw. The after-shot sum is never displayed; it is used
-only to color the current-heat row when one shot would exceed capacity.
+- SOS2 `CompShipHeat.CompInspectStringExtra` adds `(+X/shot)` to the end of
+  the existing network-heat line for weapon parents only; it never adds a row.
 
 `UI/WeaponReadoutPlaceWorker.cs` is attached only to SOS2 weapon definitions
 after definition loading. It appends heat, electrical, and network lines
@@ -78,8 +74,3 @@ speculative abstraction.
 and its linked pure tests. It is repository-local test infrastructure, not a
 production abstraction; moving it into the shipping DLL would violate the
 fixture boundary.
-
-The private methods on `WeaponReadoutGizmo` each have one caller because they
-separate row drawing, warning evaluation, and tooltip composition inside one
-small presentation class. They should remain local; promoting presentation
-details into shared services would add indirection without another consumer.

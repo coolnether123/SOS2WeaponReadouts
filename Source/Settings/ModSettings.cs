@@ -1,3 +1,4 @@
+using Spine.Api;
 using Verse;
 
 namespace SOS2WeaponReadouts.Settings
@@ -13,30 +14,9 @@ namespace SOS2WeaponReadouts.Settings
 
         public override void ExposeData()
         {
-            Scribe_Values.Look(
-                ref FeatureEnabled,
-                "featureEnabled",
-                true);
-            Scribe_Values.Look(
-                ref ShowInDescriptions,
-                "showInDescriptions",
-                true);
-            Scribe_Values.Look(
-                ref ShowSelectedWeaponReadout,
-                "showInInspectPane",
-                true);
-            Scribe_Values.Look(
-                ref ShowElectricalDraw,
-                "showElectricalDraw",
-                true);
-            Scribe_Values.Look(
-                ref ShowNetworkComparison,
-                "showNetworkComparison",
-                true);
-            Scribe_Values.Look(
-                ref ShowPlacementWarnings,
-                "showPlacementWarnings",
-                true);
+            SpineApi.Settings.Scribe(
+                this,
+                SOS2WeaponReadoutsSettingsRegistry.Definitions);
             base.ExposeData();
         }
     }

@@ -4,7 +4,7 @@
   <SOS2WR.Settings.Enabled>Enable SOS2 weapon readouts</SOS2WR.Settings.Enabled>
   <SOS2WR.Settings.Enabled.Tooltip>Disables all UI additions without changing any weapon or save data.</SOS2WR.Settings.Enabled.Tooltip>
   <SOS2WR.Settings.Descriptions>Show costs in weapon descriptions</SOS2WR.Settings.Descriptions>
-  <SOS2WR.Settings.Inspect>Show selected-weapon readout</SOS2WR.Settings.Inspect>
+  <SOS2WR.Settings.Inspect>Show heat per shot on selected weapons</SOS2WR.Settings.Inspect>
   <SOS2WR.Settings.Electrical>Show electrical draw</SOS2WR.Settings.Electrical>
   <SOS2WR.Settings.Network>Show current network heat and capacity</SOS2WR.Settings.Network>
   <SOS2WR.Settings.Placement>Show placement readouts and warnings</SOS2WR.Settings.Placement>
@@ -12,6 +12,7 @@
 
   <SOS2WR.Readout.Section>SOS2 weapon costs</SOS2WR.Readout.Section>
   <SOS2WR.Readout.HeatPerShot>Heat generated per shot</SOS2WR.Readout.HeatPerShot>
+  <SOS2WR.Readout.HeatPerShotCompact>(+{0}/shot)</SOS2WR.Readout.HeatPerShotCompact>
   <SOS2WR.Readout.ElectricalDraw>Electrical draw per shot</SOS2WR.Readout.ElectricalDraw>
   <SOS2WR.Readout.ValuesUnavailable>Per-shot costs are unavailable until the spinal weapon's amplifier chain is resolved.</SOS2WR.Readout.ValuesUnavailable>
   <SOS2WR.Readout.CurrentHeat>Current network heat</SOS2WR.Readout.CurrentHeat>

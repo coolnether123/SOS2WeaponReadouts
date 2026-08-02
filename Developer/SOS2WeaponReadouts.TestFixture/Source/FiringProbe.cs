@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Reflection;
 using HarmonyLib;
 using RimWorld;
 using SaveOurShip2;
@@ -6,55 +8,56 @@ using Verse;
 
 namespace SOS2WeaponReadouts.TestFixture
 {
-    public static class FiringProbe
+    internal static class FiringProbe
     {
-        private static readonly Dictionary<Building_ShipTurret, ProbeRecord>
-            Records = new Dictionary<Building_ShipTurret, ProbeRecord>();
+        private static readonly Dictionary<ThingWithComps, ProbeRecord>
+            Records = new Dictionary<ThingWithComps, ProbeRecord>();
 
-        public static void Reset(Building_ShipTurret turret)
+        internal static void Reset(TestTurretHandle turret)
         {
-            Records[turret] = new ProbeRecord();
+            Records[turret.Thing] = new ProbeRecord();
         }
 
-        public static ProbeRecord Snapshot(Building_ShipTurret turret)
+        internal static ProbeRecord Snapshot(TestTurretHandle turret)
         {
             ProbeRecord record;
-            return Records.TryGetValue(turret, out record)
+            return Records.TryGetValue(turret.Thing, out record)
                 ? record.Copy()
                 : new ProbeRecord();
         }
 
-        public static void Forget(Building_ShipTurret turret)
+        internal static void Forget(TestTurretHandle turret)
         {
             if (turret != null)
             {
-                Records.Remove(turret);
+                Records.Remove(turret.Thing);
             }
         }
 
-        public static void ObserveCast(
-            Verb_LaunchProjectileShip verb)
+        internal static void ObserveCast(Verb verb)
         {
-            Building_ShipTurret turret =
-                verb.caster as Building_ShipTurret;
+            ThingWithComps turret = verb.caster as ThingWithComps;
             ProbeRecord record;
             if (turret != null &&
                 Records.TryGetValue(turret, out record))
             {
                 record.CastShotCount++;
+                PropertyInfo projectile = AccessTools.Property(
+                    verb.GetType(),
+                    "Projectile");
                 record.VerbProjectileDef =
-                    verb.Projectile?.defName ?? "<none>";
+                    (projectile?.GetValue(verb, null) as ThingDef)
+                        ?.defName ?? "<none>";
                 record.LastTarget =
                     verb.CurrentTarget.Cell.ToString();
             }
         }
 
-        public static void ObserveProjectileLaunch(
+        internal static void ObserveProjectileLaunch(
             Projectile projectile,
             Thing launcher)
         {
-            Building_ShipTurret turret =
-                launcher as Building_ShipTurret;
+            ThingWithComps turret = launcher as ThingWithComps;
             ProbeRecord record;
             if (turret != null &&
                 Records.TryGetValue(turret, out record))
@@ -65,33 +68,41 @@ namespace SOS2WeaponReadouts.TestFixture
             }
         }
 
-        public static void ObserveBeginBurstBefore(
-            Building_ShipTurret __instance)
+        internal static void ObserveBeginBurstBefore(object instance)
         {
+            ThingWithComps turret = instance as ThingWithComps;
             ProbeRecord record;
-            if (!Records.TryGetValue(__instance, out record))
+            if (turret == null ||
+                !Records.TryGetValue(turret, out record))
             {
                 return;
             }
 
             record.BeginBurstCount++;
-            record.HeatBefore = __instance.heatComp.myNet.StorageUsed;
+            CompShipHeat heatComp = turret.TryGetComp<CompShipHeat>();
+            CompPowerTrader powerComp =
+                turret.TryGetComp<CompPowerTrader>();
+            record.HeatBefore = heatComp.myNet.StorageUsed;
             record.PowerBefore =
-                __instance.powerComp.PowerNet.CurrentStoredEnergy();
+                powerComp.PowerNet.CurrentStoredEnergy();
         }
 
-        public static void ObserveBeginBurstAfter(
-            Building_ShipTurret __instance)
+        internal static void ObserveBeginBurstAfter(object instance)
         {
+            ThingWithComps turret = instance as ThingWithComps;
             ProbeRecord record;
-            if (!Records.TryGetValue(__instance, out record))
+            if (turret == null ||
+                !Records.TryGetValue(turret, out record))
             {
                 return;
             }
 
-            record.HeatAfter = __instance.heatComp.myNet.StorageUsed;
+            CompShipHeat heatComp = turret.TryGetComp<CompShipHeat>();
+            CompPowerTrader powerComp =
+                turret.TryGetComp<CompPowerTrader>();
+            record.HeatAfter = heatComp.myNet.StorageUsed;
             record.PowerAfter =
-                __instance.powerComp.PowerNet.CurrentStoredEnergy();
+                powerComp.PowerNet.CurrentStoredEnergy();
         }
     }
 
@@ -122,39 +133,70 @@ namespace SOS2WeaponReadouts.TestFixture
     [HarmonyPatch]
     internal static class LaunchProjectileProbePatch
     {
-        private static System.Reflection.MethodBase TargetMethod()
+        private static IEnumerable<MethodBase> TargetMethods()
         {
-            return AccessTools.Method(
+            MethodInfo native = AccessTools.Method(
                 typeof(Verb_LaunchProjectileShip),
                 "TryCastShot");
+            if (native != null)
+            {
+                yield return native;
+            }
+
+            Type ceVerb = AccessTools.TypeByName(
+                "CombatExtended.Compatibility.SOS2Compat.Verb_ShootShipCE");
+            MethodInfo ce = ceVerb == null
+                ? null
+                : AccessTools.Method(ceVerb, "TryCastShot");
+            if (ce != null)
+            {
+                yield return ce;
+            }
         }
 
-        private static void Prefix(
-            Verb_LaunchProjectileShip __instance)
+        private static void Prefix(Verb __instance)
         {
             FiringProbe.ObserveCast(__instance);
         }
     }
 
-    [HarmonyPatch(
-        typeof(Building_ShipTurret),
-        nameof(Building_ShipTurret.BeginBurst))]
+    [HarmonyPatch]
     internal static class BeginBurstProbePatch
     {
-        private static void Prefix(
-            Building_ShipTurret __instance)
+        private static IEnumerable<MethodBase> TargetMethods()
+        {
+            MethodInfo native = AccessTools.Method(
+                typeof(Building_ShipTurret),
+                nameof(Building_ShipTurret.BeginBurst));
+            if (native != null)
+            {
+                yield return native;
+            }
+
+            Type ceTurret = AccessTools.TypeByName(
+                "CombatExtended.Compatibility.SOS2Compat." +
+                "Building_ShipTurretCE");
+            MethodInfo ce = ceTurret == null
+                ? null
+                : AccessTools.Method(ceTurret, "BeginBurst");
+            if (ce != null)
+            {
+                yield return ce;
+            }
+        }
+
+        private static void Prefix(object __instance)
         {
             FiringProbe.ObserveBeginBurstBefore(__instance);
         }
 
-        private static void Postfix(
-            Building_ShipTurret __instance)
+        private static void Postfix(object __instance)
         {
             FiringProbe.ObserveBeginBurstAfter(__instance);
         }
     }
 
-    public sealed class ProbeRecord
+    internal sealed class ProbeRecord
     {
         public int BeginBurstCount;
         public int CastShotCount;

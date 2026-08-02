@@ -2,11 +2,11 @@
 
 Investigated source:
 
-- Repository: `A:\Dev\RimWorld\Dependencies\SaveOurShip2`
+- Repository: `<sos2-source-root>`
 - Branch: `stable`
 - Commit: `296ba9a2bec124981cff46e557a07934702a210b`
 - Runtime assembly:
-  `A:\Dev\RimWorld\Dependencies\SaveOurShip2\1.6\Assemblies\ShipsHaveInsides.dll`
+  `<sos2-source-root>\1.6\Assemblies\ShipsHaveInsides.dll`
 - Assembly SHA-256:
   `ACF42144F4340D24D63E2695FC5D6BC94BC48E14D7E158DF7B7E43D078EF2DAE`
 

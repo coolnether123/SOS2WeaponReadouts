@@ -9,9 +9,12 @@ Because SOS2 is a declared required dependency, RimWorld normally prevents the
 mod from loading when SOS2 is absent; the unavailable adapter is defensive
 startup behavior rather than the normal missing-dependency user experience.
 
-Current known limitation: Combat Extended's optional SOS2 surrogate turret
-class is not patched. Supporting it safely requires validating CE's separate
-compatibility assembly and is outside the required SOS2 dependency scope.
+Combat Extended's optional SOS2 surrogate turret is supported when CE's
+`SOS2Compat` assembly is present. The adapter discovers that class without a
+hard CE dependency, validates its heat and firing-cost shape, and patches its
+SOS2 heat-component inspect line alongside native SOS2 turrets. Definition
+information and placement readouts use the same shared calculation path. Combat Extended
+must remain after Save Our Ship 2 in the load order, as declared by CE itself.
 
 Future SOS2 releases that add equivalent text are handled semantically: heat,
 electrical, connection, and current network capacity fields are independently
@@ -23,8 +26,8 @@ suppressed when already present.
   hook is added.
 - Type/member reflection happens once during adapter construction.
 - Definition cost reads occur only when an information card enumerates stats.
-- Placed cost reads occur only when RimWorld requests the selected SOS2
-  turret's gizmos.
+- Placed cost reads occur only when SOS2 requests a heat component's inspect
+  text; non-weapon parents are rejected before any weapon-cost reflection.
 - Cardinal cell/network scanning occurs only for the currently active SOS2
   weapon placement designator during RimWorld's ordinary OnGUI mouse-attachment
   pass.

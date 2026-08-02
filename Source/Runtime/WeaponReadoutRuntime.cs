@@ -9,6 +9,8 @@ using SOS2WeaponReadouts.Compatibility;
 using SOS2WeaponReadouts.Diagnostics;
 using SOS2WeaponReadouts.Domain;
 using SOS2WeaponReadouts.UI;
+using Spine.Api;
+using Spine.Harmony;
 using Verse;
 
 namespace SOS2WeaponReadouts.Runtime
@@ -18,6 +20,10 @@ namespace SOS2WeaponReadouts.Runtime
         private const string HarmonyId =
             "CoolNether123.SOS2WeaponReadouts";
         private static bool initialized;
+        private static readonly IHarmonyPatchInstaller PatchInstaller =
+            SpineApi.Patching.CreateInstaller(
+                HarmonyId,
+                "[SOS2 Weapon Readouts]");
 
         public static ISos2WeaponAdapter Adapter { get; private set; }
 
@@ -43,19 +49,25 @@ namespace SOS2WeaponReadouts.Runtime
                 return;
             }
 
-            try
+            LongEventHandler.ExecuteWhenFinished(() =>
             {
-                new Harmony(HarmonyId).PatchAll(
-                    Assembly.GetExecutingAssembly());
-                LongEventHandler.ExecuteWhenFinished(
-                    PlacementWorkerInstaller.Install);
-            }
-            catch (Exception exception)
-            {
-                CompatibilityDiagnostics.ReportExceptionOnce(
-                    "Harmony and placement integration",
-                    exception);
-            }
+                try
+                {
+                    PatchInstaller.PatchAllOnce(
+                        Assembly.GetExecutingAssembly(),
+                        new HarmonyPatchOptions
+                        {
+                            AllowStructReturns = true
+                        });
+                    PlacementWorkerInstaller.Install();
+                }
+                catch (Exception exception)
+                {
+                    CompatibilityDiagnostics.ReportExceptionOnce(
+                        "Harmony and placement integration",
+                        exception);
+                }
+            });
         }
 
         public static void NotifySettingsChanged()
@@ -70,7 +82,7 @@ namespace SOS2WeaponReadouts.Runtime
         {
             var entries = (existing ?? Enumerable.Empty<StatDrawEntry>())
                 .ToList();
-            var settings = SOS2WeaponReadoutsMod.Instance?.Settings;
+            var settings = SOS2WeaponReadoutsMod.Settings;
             if (settings == null ||
                 !settings.FeatureEnabled ||
                 !settings.ShowInDescriptions ||
@@ -91,8 +103,8 @@ namespace SOS2WeaponReadouts.Runtime
                 var existingText = string.Join(
                     "\n",
                     entries.Select(
-                        entry => entry.LabelCap + ": " +
-                            entry.ValueString));
+                        statEntry => statEntry.LabelCap + ": " +
+                            statEntry.ValueString));
                 var lines = ReadoutFormatter.BuildMissingLines(
                     existingText,
                     readout,
@@ -131,43 +143,42 @@ namespace SOS2WeaponReadouts.Runtime
             }
         }
 
-        public static IEnumerable<Gizmo> AppendSelectedWeaponGizmo(
+        public static string AppendHeatPerShotToInspectString(
             object building,
-            IEnumerable<Gizmo> existing)
+            string existing)
         {
-            var gizmos = (existing ?? Enumerable.Empty<Gizmo>())
-                .ToList();
-            var settings = SOS2WeaponReadoutsMod.Instance?.Settings;
+            var settings = SOS2WeaponReadoutsMod.Settings;
             if (settings == null ||
                 !settings.FeatureEnabled ||
                 !settings.ShowSelectedWeaponReadout ||
-                Adapter == null)
-            {
-                return gizmos;
-            }
-
-            try
-            {
-                if (!Adapter.TryReadPlaced(
+                Adapter == null ||
+                !Adapter.TryReadPlaced(
                     building,
-                    out WeaponReadout readout))
-                {
-                    return gizmos;
-                }
-
-                gizmos.Add(new WeaponReadoutGizmo(
-                    readout,
-                    CreatePresentation(settings),
-                    ReadoutLocalizer.CreateLabels(readout)));
-                return gizmos;
-            }
-            catch (Exception exception)
+                    out WeaponReadout readout) ||
+                !readout.DynamicValuesAvailable ||
+                string.IsNullOrWhiteSpace(existing) ||
+                ExistingReadoutDetector.HasHeatPerShot(existing))
             {
-                CompatibilityDiagnostics.ReportExceptionOnce(
-                    "selected weapon gizmo",
-                    exception);
-                return gizmos;
+                return existing ?? string.Empty;
             }
+
+            string suffix = ReadoutFormatter.FormatHeatPerShotSuffix(
+                readout,
+                ReadoutLocalizer.CreateLabels(readout));
+            if (string.IsNullOrWhiteSpace(suffix))
+            {
+                return existing;
+            }
+
+            int lineEnd = existing.IndexOfAny(
+                new[] { '\r', '\n' });
+            if (lineEnd < 0)
+            {
+                return existing.TrimEnd() + " " + suffix;
+            }
+
+            return existing.Substring(0, lineEnd).TrimEnd() +
+                " " + suffix + existing.Substring(lineEnd);
         }
 
         public static bool TryCreatePlacementReadout(
@@ -180,7 +191,7 @@ namespace SOS2WeaponReadouts.Runtime
         {
             text = string.Empty;
             warning = false;
-            var settings = SOS2WeaponReadoutsMod.Instance?.Settings;
+            var settings = SOS2WeaponReadoutsMod.Settings;
             if (settings == null ||
                 !settings.FeatureEnabled ||
                 !settings.ShowPlacementWarnings ||

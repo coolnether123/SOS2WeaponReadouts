@@ -10,17 +10,17 @@ save data.
 - Exact heat generated per firing cycle in SOS2 heat units (HU).
 - Exact electrical draw per firing cycle in descriptions and placement
   previews where SOS2 does not already show it.
-- Compact selected-weapon display with current network heat/capacity and heat
-  per shot, without repeating SOS2's existing energy-to-fire line.
+- A compact `(+X/shot)` suffix on SOS2's existing selected-weapon network heat
+  line. It reuses the line's HU unit and adds no redundant panel or extra row.
 - Clear disconnected-network and missing-bridge information.
 - Non-blocking placement readouts and safety warnings.
 - Independent toggles for descriptions, the selected-weapon display, electrical values,
   network comparison, and placement previews.
 - Semantic deduplication when SOS2 already supplies a field.
 
-Alt-click the selected-weapon readout, placement preview, or added information-
-card row to open and highlight its setting. The Alt-click does not activate a
-gizmo, place or cancel a designator, or alter targeting.
+Alt-click the placement preview or added information-card row to open and
+highlight its setting. The Alt-click does not place or cancel a designator or
+alter targeting.
 
 ## Requirements
 
@@ -32,8 +32,7 @@ gizmo, place or cancel a designator, or alter targeting.
 ## Installation
 
 Spine does not yet have a public Workshop or download URL, so this verified
-build is distributed in the local collection at
-`A:\Dev\RimWorld\Releases\1.6\2026-07-30-program-final`. Copy
+build is distributed through the locally produced release collection. Copy
 `SOS2WeaponReadouts` and `Spine` into RimWorld's `Mods` directory, install
 Harmony, Vehicle Framework, and Save Our Ship 2 from their normal sources, and
 enable the dependencies before SOS2 Weapon Readouts. No other gameplay mod in

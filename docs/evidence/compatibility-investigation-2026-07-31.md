@@ -24,7 +24,7 @@ The “download date” below is the acquisition time where this investigation d
 | Architect Icons | `com.bymarcin.ArchitectIcons` | Workshop item `1195427067`, described version `1.9` | local Workshop folder last modified 2025-07-13 17:48:10 -05:00 |
 | Better Architect Menu | `ferny.BetterArchitect` | Workshop item `3563882422`, 1.6 metadata | local Workshop folder last modified 2026-07-28 18:24:49 -05:00 |
 
-Every valid lane used `H:\Games\RimWorld1-6-4871Win64\RimWorldWin64.exe`, build `1.6.4871 rev573`, Core only. The game assembly registered by the harness has SHA-256 `4A170804FBFEFABDB620D8914E584E58F822A58C6E304DCB76A67003588DAB28`.
+Every valid lane used `<rimworld-install>\RimWorldWin64.exe`, build `1.6.4871 rev573`, Core only. The game assembly registered by the harness has SHA-256 `4A170804FBFEFABDB620D8914E584E58F822A58C6E304DCB76A67003588DAB28`.
 
 ## Combination records
 
@@ -48,7 +48,7 @@ Result and evidence:
 
 Primary paths:
 
-- `C:\Users\PrecisionX\AppData\Local\Temp\RimWorldAgentTasks\1.6\SOS2WeaponReadouts-dbab02fa329d43d6bdb987968a3a213d\ipc\evidence\sos2wr\firing-proof.txt` — SHA-256 `5D2035A5E0371919F0B78E73A34EDEE42C1221BC9C3245ED6E850996EBF39BC9`
+- `<harness-evidence-root>\SOS2WeaponReadouts-dbab02fa329d43d6bdb987968a3a213d\ipc\evidence\sos2wr\firing-proof.txt` — SHA-256 `5D2035A5E0371919F0B78E73A34EDEE42C1221BC9C3245ED6E850996EBF39BC9`
 - `...\ipc\captures\baseline-selected-laser-gizmo-20260801-005101-897.png` — SHA-256 `C983F798A0587D74E3381361F5965A7A09B4EEFB53DD82ED8E57A6FA48061425`
 - `...\ipc\captures\baseline-laser-info-20260801-005111-056.png` — SHA-256 `AD9276C7FED2CE3C99CA14F0E0785641FA1612C07F6AB222F564CFC32ED2B640`
 - `...\ipc\captures\baseline-laser-placement-20260801-005139-746.png` — SHA-256 `9B9A59DACD9844FA39C11B1D55BA3D61BECC7A92CAFC73C2DADEFC7ABD5D73D2`

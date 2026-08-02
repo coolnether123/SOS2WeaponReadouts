@@ -78,6 +78,8 @@ namespace SOS2WeaponReadouts.Domain
         private static bool HasFiringTerm(string text)
         {
             return text.Contains("per shot") ||
+                text.Contains("/shot") ||
+                text.Contains("each shot") ||
                 text.Contains("per firing") ||
                 text.Contains("to fire");
         }
