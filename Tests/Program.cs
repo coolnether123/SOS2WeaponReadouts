@@ -11,7 +11,7 @@ namespace SOS2WeaponReadouts.Tests
         private static readonly ReadoutLabels Labels =
             new ReadoutLabels
             {
-                Section = "SOS2 weapon costs",
+                Section = "Per-shot costs",
                 HeatPerShot = "Heat generated per shot",
                 ElectricalDrawPerShot =
                     "Electrical draw per shot",
@@ -98,7 +98,7 @@ namespace SOS2WeaponReadouts.Tests
                 FullPresentation,
                 Labels,
                 true);
-            ContainsActual(text, "SOS2 weapon costs");
+            ContainsActual(text, "Per-shot costs");
             ContainsActual(text, "Heat generated per shot: 12 HU");
             ContainsActual(text, "Electrical draw per shot: 0 Wd");
         }

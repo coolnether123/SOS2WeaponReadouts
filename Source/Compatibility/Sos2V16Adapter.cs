@@ -75,9 +75,17 @@ namespace SOS2WeaponReadouts.Compatibility
                 "TacCons");
 
             var assemblyName = turretType.Assembly.GetName();
+            Version assemblyVersion = assemblyName.Version;
+            string versionText = assemblyVersion != null &&
+                (assemblyVersion.Major != 0 ||
+                 assemblyVersion.Minor != 0 ||
+                 assemblyVersion.Build > 0 ||
+                 assemblyVersion.Revision > 0)
+                    ? " " + assemblyVersion
+                    : string.Empty;
             Status = new CompatibilityStatus(
                 CompatibilityState.Supported,
-                "SOS2 " + assemblyName.Version +
+                "SOS2" + versionText +
                 " exposes the supported RimWorld 1.6 weapon API" +
                 (ceSurrogateType == null
                     ? "."

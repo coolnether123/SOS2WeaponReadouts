@@ -10,7 +10,7 @@
   <SOS2WR.Settings.Placement>Show placement readouts and warnings</SOS2WR.Settings.Placement>
   <SOS2WR.Settings.Compatibility>Compatibility</SOS2WR.Settings.Compatibility>
 
-  <SOS2WR.Readout.Section>SOS2 weapon costs</SOS2WR.Readout.Section>
+  <SOS2WR.Readout.Section>Per-shot costs</SOS2WR.Readout.Section>
   <SOS2WR.Readout.HeatPerShot>Heat generated per shot</SOS2WR.Readout.HeatPerShot>
   <SOS2WR.Readout.HeatPerShotCompact>(+{0}/shot)</SOS2WR.Readout.HeatPerShotCompact>
   <SOS2WR.Readout.ElectricalDraw>Electrical draw per shot</SOS2WR.Readout.ElectricalDraw>

@@ -30,5 +30,7 @@
     <li>CoolNether123.Spine</li>
     <li>kentington.saveourship2</li>
   </loadAfter>
-  <description>Heat, electrical-pulse, connection, and capacity readouts for Save Our Ship 2 weapons.</description>
+  <description>Adds the missing per-shot information to Save Our Ship 2 weapons without changing their balance.
+
+Built weapons append a compact (+X/shot) value to SOS2's existing network-heat line instead of adding another inspect row. Information cards and placement previews add only details SOS2 does not already show, including connection and capacity warnings.</description>
 </ModMetaData>

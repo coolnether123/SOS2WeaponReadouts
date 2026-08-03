@@ -376,3 +376,12 @@ Capture SHA-256:
 Cleanup passed with `cacheRemoved=True`, `shipsRemaining=0`, and
 `cleanupErrors=0`. The final pre-shutdown scan found no matching Player.log
 error, and the harness stopped normally without forced termination.
+## Final release-candidate gate — 2026-08-03
+
+Passed 19 contracts (34 assertions), firing-fixture surrogate, inspect-panel,
+placement-GUI, current SOS2 API, clean build, and package checks. The real SOS2
+fixture fired a connected laser for exactly 30 HU and 80 Wd, suppressed shots
+when power was insufficient or the network was disconnected, and cleaned all
+157 fixture objects with no cache residue. Live UI showed one compact
+`Per-shot costs` row and the compatibility page omitted the dependency's
+meaningless zero assembly version.

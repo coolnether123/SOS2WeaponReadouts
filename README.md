@@ -1,7 +1,7 @@
 # SOS2 Weapon Readouts
 
-SOS2 Weapon Readouts adds the missing per-shot thermal and electrical costs to
-Save Our Ship 2 weapon descriptions, selected-weapon controls, and placement
+SOS2 Weapon Readouts adds missing per-shot information to Save Our Ship 2
+weapon descriptions, the existing selected-weapon heat line, and placement
 previews. It never changes weapon balance, placement validity, firing logic, or
 save data.
 
@@ -14,8 +14,8 @@ save data.
   line. It reuses the line's HU unit and adds no redundant panel or extra row.
 - Clear disconnected-network and missing-bridge information.
 - Non-blocking placement readouts and safety warnings.
-- Independent toggles for descriptions, the selected-weapon display, electrical values,
-  network comparison, and placement previews.
+- Independent toggles for information cards, the selected-weapon heat suffix,
+  electrical values, network comparison, and placement previews.
 - Semantic deduplication when SOS2 already supplies a field.
 
 Alt-click the placement preview or added information-card row to open and
