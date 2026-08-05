@@ -6,3 +6,7 @@
 Engineering/artifacts/
 Developer/**/Assemblies/*.pdb
 1.6/Assemblies/*.pdb
+
+# Local developer fixtures. Never part of the release payload, and their
+# built assemblies go stale the moment the shipping mod moves on.
+Developer/
