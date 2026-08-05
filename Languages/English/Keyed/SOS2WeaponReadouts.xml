@@ -8,6 +8,11 @@
   <SOS2WR.Settings.Electrical>Show electrical draw</SOS2WR.Settings.Electrical>
   <SOS2WR.Settings.Network>Show current network heat and capacity</SOS2WR.Settings.Network>
   <SOS2WR.Settings.Placement>Show placement readouts and warnings</SOS2WR.Settings.Placement>
+  <SOS2WR.Settings.Descriptions.Tooltip>Adds per-shot heat and electrical cost to a weapon's information card, so you can compare weapons before committing to building one.</SOS2WR.Settings.Descriptions.Tooltip>
+  <SOS2WR.Settings.Inspect.Tooltip>Adds per-shot costs to the inspect pane of a weapon you have selected, so you can read them without opening the information card.</SOS2WR.Settings.Inspect.Tooltip>
+  <SOS2WR.Settings.Electrical.Tooltip>Includes electrical draw per shot alongside the heat figures. Turn this off if only thermal load matters to you.</SOS2WR.Settings.Electrical.Tooltip>
+  <SOS2WR.Settings.Network.Tooltip>Shows the current heat and remaining capacity of the thermal network a weapon is attached to, and warns when that network cannot absorb even one shot.</SOS2WR.Settings.Network.Tooltip>
+  <SOS2WR.Settings.Placement.Tooltip>While placing a weapon, shows its per-shot costs and warns if the chosen spot has no thermal network, no ship bridge, or too little capacity for a single shot.</SOS2WR.Settings.Placement.Tooltip>
   <SOS2WR.Settings.Compatibility>Compatibility</SOS2WR.Settings.Compatibility>
 
   <SOS2WR.Readout.Section>Per-shot costs</SOS2WR.Readout.Section>
