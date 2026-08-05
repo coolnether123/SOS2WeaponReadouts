@@ -8,6 +8,13 @@
   "configuration": "Release",
   "assemblyName": "SOS2WeaponReadouts",
   "packageId": "CoolNether123.SOS2WeaponReadouts",
+  "releaseIncludePaths": [
+    "About",
+    "1.6/Assemblies/SOS2WeaponReadouts.dll",
+    "Languages",
+    "LICENSE",
+    "README.md"
+  ],
   "dependencies": [
     "harmony",
     "spine",
