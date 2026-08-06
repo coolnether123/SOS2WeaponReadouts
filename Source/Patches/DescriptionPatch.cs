@@ -6,6 +6,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Patches
 {
+    /// <summary>
+    /// Adds missing weapon costs where RimWorld actually builds information
+    /// card statistics.
+    /// </summary>
     [HarmonyPatch(
         typeof(ThingDef),
         nameof(ThingDef.SpecialDisplayStats))]

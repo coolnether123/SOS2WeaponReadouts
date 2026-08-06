@@ -3,6 +3,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.UI
 {
+    /// <summary>
+    /// Resolves RimWorld translations at the UI boundary so domain formatting
+    /// stays deterministic and testable.
+    /// </summary>
     public static class ReadoutLocalizer
     {
         public static ReadoutLabels CreateLabels(

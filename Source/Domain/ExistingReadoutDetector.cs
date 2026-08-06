@@ -2,6 +2,10 @@ using System;
 
 namespace SOS2WeaponReadouts.Domain
 {
+    /// <summary>
+    /// Recognizes equivalent SOS2 readouts so this mod can add missing facts
+    /// without duplicating another UI owner's text.
+    /// </summary>
     public static class ExistingReadoutDetector
     {
         public static bool HasHeatPerShot(string text)
@@ -93,6 +97,8 @@ namespace SOS2WeaponReadouts.Domain
                 return false;
             }
 
+            // Costs must coexist on one line; combining terms from unrelated
+            // SOS2 lines would incorrectly suppress a missing readout.
             var lines = text.Split(
                 new[] { "\r\n", "\n", "\r" },
                 StringSplitOptions.RemoveEmptyEntries);

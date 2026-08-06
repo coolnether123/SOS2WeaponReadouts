@@ -2,6 +2,10 @@ using System;
 
 namespace SOS2WeaponReadouts.Domain
 {
+    /// <summary>
+    /// Centralizes SOS2 firing-cost rules so definition and placed readouts
+    /// cannot drift apart.
+    /// </summary>
     public static class ShotCostCalculator
     {
         public const float Sos2HeatPulseMultiplier = 3f;

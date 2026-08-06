@@ -15,6 +15,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Runtime
 {
+    /// <summary>
+    /// Coordinates compatibility, settings, formatting, and narrow game hooks
+    /// behind exception-isolated UI entry points.
+    /// </summary>
     public static class WeaponReadoutRuntime
     {
         private const string HarmonyId =
@@ -49,6 +53,8 @@ namespace SOS2WeaponReadouts.Runtime
                 return;
             }
 
+            // Patches and definition mutations must wait for RimWorld's
+            // long-load work to finish on the main thread.
             LongEventHandler.ExecuteWhenFinished(() =>
             {
                 try
@@ -115,6 +121,8 @@ namespace SOS2WeaponReadouts.Runtime
                     return entries;
                 }
 
+                // The card has one compact value column; full labels remain in
+                // the description where RimWorld has room to explain them.
                 var values = lines.Select(line =>
                 {
                     var separator = line.IndexOf(
@@ -170,6 +178,8 @@ namespace SOS2WeaponReadouts.Runtime
                 return existing;
             }
 
+            // SOS2 owns every later component line, so only its first network
+            // line is eligible for the compact suffix.
             int lineEnd = existing.IndexOfAny(
                 new[] { '\r', '\n' });
             if (lineEnd < 0)

@@ -6,6 +6,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Settings
 {
+    /// <summary>
+    /// Defines the shared Spine settings page so persistence, navigation, and
+    /// contextual links use the same stable identifiers.
+    /// </summary>
     internal static class SOS2WeaponReadoutsSettingsRegistry
     {
         internal static readonly IReadOnlyList<SettingDefinition> Definitions =

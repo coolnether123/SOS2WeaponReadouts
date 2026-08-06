@@ -4,6 +4,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Compatibility
 {
+    /// <summary>
+    /// Shields the rest of the mod from SOS2 API details and optional weapon
+    /// shapes.
+    /// </summary>
     public interface ISos2WeaponAdapter
     {
         CompatibilityStatus Status { get; }

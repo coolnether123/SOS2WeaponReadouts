@@ -2,6 +2,10 @@ using System;
 
 namespace SOS2WeaponReadouts.Domain
 {
+    /// <summary>
+    /// Carries normalized per-shot costs and optional live network state across
+    /// compatibility and UI boundaries.
+    /// </summary>
     public sealed class WeaponReadout
     {
         public WeaponReadout(
@@ -25,6 +29,10 @@ namespace SOS2WeaponReadouts.Domain
         public NetworkReadout Network { get; }
     }
 
+    /// <summary>
+    /// Represents the network facts needed for useful placement and capacity
+    /// warnings without exposing SOS2 objects.
+    /// </summary>
     public sealed class NetworkReadout
     {
         public NetworkReadout(

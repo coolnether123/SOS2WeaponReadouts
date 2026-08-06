@@ -8,6 +8,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.UI
 {
+    /// <summary>
+    /// Marks only this mod's generated stat rows so contextual settings never
+    /// bind to unrelated information-card content.
+    /// </summary>
     internal static class InformationCardContext
     {
         private static readonly ConditionalWeakTable<StatDrawEntry, Marker>
@@ -24,11 +28,19 @@ namespace SOS2WeaponReadouts.UI
         internal static bool Contains(StatDrawEntry entry) =>
             entry != null && Entries.TryGetValue(entry, out _);
 
+        /// <summary>
+        /// Provides a weak-table value without retaining state or extending a
+        /// stat row's lifetime.
+        /// </summary>
         private sealed class Marker
         {
         }
     }
 
+    /// <summary>
+    /// Binds Alt-click navigation to the exact generated row while RimWorld is
+    /// drawing its final rectangle.
+    /// </summary>
     [HarmonyPatch(typeof(StatDrawEntry), nameof(StatDrawEntry.Draw))]
     internal static class InformationCardContextPatch
     {

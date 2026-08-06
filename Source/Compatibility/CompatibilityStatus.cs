@@ -1,5 +1,8 @@
 namespace SOS2WeaponReadouts.Compatibility
 {
+    /// <summary>
+    /// Categorizes whether readout integration can run or why it was disabled.
+    /// </summary>
     public enum CompatibilityState
     {
         Supported,
@@ -8,6 +11,10 @@ namespace SOS2WeaponReadouts.Compatibility
         InitializationFailed
     }
 
+    /// <summary>
+    /// Carries a compatibility decision and its player-facing explanation as
+    /// one result.
+    /// </summary>
     public sealed class CompatibilityStatus
     {
         public CompatibilityStatus(

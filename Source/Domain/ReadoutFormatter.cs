@@ -5,6 +5,10 @@ using System.Linq;
 
 namespace SOS2WeaponReadouts.Domain
 {
+    /// <summary>
+    /// Composes bounded, deduplicated readout text for every presentation
+    /// surface from the same domain values.
+    /// </summary>
     public static class ReadoutFormatter
     {
         public static string AppendMissing(
@@ -79,6 +83,8 @@ namespace SOS2WeaponReadouts.Domain
                 network != null &&
                 !existingNetworkSurface;
 
+            // Folding the cost into a network line preserves the compact UI
+            // budget while still exposing heat when no native line exists.
             if (heatMissing && !mergeHeatIntoNetwork)
             {
                 result.Add(
@@ -213,6 +219,8 @@ namespace SOS2WeaponReadouts.Domain
             }
             result.Add(networkLine);
 
+            // The epsilon prevents harmless floating-point residue from
+            // turning an exactly full network into a warning.
             if (network.Used + readout.HeatPerShot >
                     network.Capacity + 0.001f &&
                 !ContainsIgnoreCase(existing, labels.HeatInsufficient))

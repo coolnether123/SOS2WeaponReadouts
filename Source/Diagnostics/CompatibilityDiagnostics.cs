@@ -4,6 +4,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Diagnostics
 {
+    /// <summary>
+    /// Reports integration failures once so disabled features remain visible
+    /// without flooding the game log.
+    /// </summary>
     public static class CompatibilityDiagnostics
     {
         private static readonly HashSet<string> ReportedKeys =

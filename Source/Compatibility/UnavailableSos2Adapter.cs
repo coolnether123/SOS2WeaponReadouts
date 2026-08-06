@@ -4,6 +4,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Compatibility
 {
+    /// <summary>
+    /// Keeps callers operational when SOS2 cannot be integrated, without
+    /// scattering compatibility checks through the UI.
+    /// </summary>
     internal sealed class UnavailableSos2Adapter : ISos2WeaponAdapter
     {
         public UnavailableSos2Adapter(CompatibilityStatus status)

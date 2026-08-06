@@ -6,6 +6,10 @@ using Spine.UI.ContextualSettings;
 
 namespace SOS2WeaponReadouts.UI
 {
+    /// <summary>
+    /// Presents non-blocking weapon costs during legal placement-time OnGUI
+    /// drawing without affecting whether a designator may place.
+    /// </summary>
     public sealed class WeaponReadoutPlaceWorker : PlaceWorker
     {
         public override void DrawPlaceMouseAttachments(

@@ -4,6 +4,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Compatibility
 {
+    /// <summary>
+    /// Negotiates the installed SOS2 API into either a usable adapter or a
+    /// controlled unavailable result.
+    /// </summary>
     public static class Sos2AdapterFactory
     {
         public const string PackageId = "kentington.saveourship2";

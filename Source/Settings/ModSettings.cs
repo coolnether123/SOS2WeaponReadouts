@@ -3,6 +3,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Settings
 {
+    /// <summary>
+    /// Persists player choices for which readout surfaces and details are
+    /// enabled.
+    /// </summary>
     public sealed class SOS2WeaponReadoutsSettings : ModSettings
     {
         public bool FeatureEnabled = true;

@@ -8,6 +8,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Runtime
 {
+    /// <summary>
+    /// Attaches the non-blocking preview only to definitions recognized by the
+    /// negotiated SOS2 adapter.
+    /// </summary>
     internal static class PlacementWorkerInstaller
     {
         public static void Install()
@@ -39,6 +43,8 @@ namespace SOS2WeaponReadouts.Runtime
 
                 definition.placeWorkers.Add(
                     typeof(WeaponReadoutPlaceWorker));
+                // RimWorld caches worker instances, so the definition mutation
+                // is invisible until that private cache is invalidated.
                 AccessTools.Field(
                     typeof(BuildableDef),
                     "placeWorkersInstantiatedInt")

@@ -6,6 +6,10 @@ using Spine.UI.SettingsFramework;
 
 namespace SOS2WeaponReadouts.Bootstrap
 {
+    /// <summary>
+    /// Connects the mod to Spine so settings and runtime integration share one
+    /// lifecycle owner.
+    /// </summary>
     public sealed class SOS2WeaponReadoutsMod :
         SpineMod<SOS2WeaponReadoutsSettings>
     {

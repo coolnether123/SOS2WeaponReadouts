@@ -7,6 +7,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Compatibility
 {
+    /// <summary>
+    /// Translates the supported SOS2 1.6 runtime API into stable readout domain
+    /// values without creating a hard assembly dependency.
+    /// </summary>
     internal sealed class Sos2V16Adapter : ISos2WeaponAdapter
     {
         private const string CeSurrogateTypeName =
@@ -148,6 +152,8 @@ namespace SOS2WeaponReadouts.Compatibility
                     : ReadBoolean(
                         binding.ConnectedToBridge,
                         building));
+            // SOS2 uses a negative amplifier count until spinal weapon values
+            // settle, so presenting those transient costs would be misleading.
             var hasUnresolvedSpinalAmplifiers =
                 binding.SpinalComp != null &&
                 binding.AmplifierCount != null &&
@@ -177,6 +183,8 @@ namespace SOS2WeaponReadouts.Compatibility
                 return false;
             }
 
+            // Several adjacent cells can expose the same heat grid. Identity
+            // deduplication prevents counting its capacity more than once.
             var networks = new HashSet<object>();
             foreach (var cell in GenAdj.CellsAdjacentCardinal(
                 center,
@@ -279,6 +287,8 @@ namespace SOS2WeaponReadouts.Compatibility
                 return 0;
             }
 
+            // The SOS2 collection types stay behind the reflection boundary,
+            // so only their common Count shape is allowed to escape it.
             var count = collection.GetType().GetProperty("Count");
             return count == null
                 ? 0
@@ -332,6 +342,10 @@ namespace SOS2WeaponReadouts.Compatibility
                 throw new MissingMemberException(type.FullName, name);
         }
 
+        /// <summary>
+        /// Captures the validated member shape for each supported turret family
+        /// so hot read paths do not repeat reflection discovery.
+        /// </summary>
         private sealed class WeaponTypeBinding
         {
             private WeaponTypeBinding(

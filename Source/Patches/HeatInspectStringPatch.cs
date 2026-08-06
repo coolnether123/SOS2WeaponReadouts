@@ -5,6 +5,10 @@ using Verse;
 
 namespace SOS2WeaponReadouts.Patches
 {
+    /// <summary>
+    /// Extends SOS2's own selected-weapon heat line so the mod does not create
+    /// a competing inspect surface.
+    /// </summary>
     [HarmonyPatch]
     internal static class HeatInspectStringPatch
     {

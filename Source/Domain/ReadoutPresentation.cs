@@ -1,5 +1,9 @@
 namespace SOS2WeaponReadouts.Domain
 {
+    /// <summary>
+    /// Supplies presentation choices to the pure formatter without coupling it
+    /// to persisted mod settings.
+    /// </summary>
     public sealed class ReadoutPresentation
     {
         public bool ShowElectricalDraw { get; set; } = true;
@@ -7,6 +11,10 @@ namespace SOS2WeaponReadouts.Domain
         public bool ShowNetworkComparison { get; set; } = true;
     }
 
+    /// <summary>
+    /// Supplies localized wording and units while keeping formatting logic
+    /// independent of RimWorld translation APIs.
+    /// </summary>
     public sealed class ReadoutLabels
     {
         public string Section { get; set; }
