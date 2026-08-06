@@ -26,13 +26,12 @@ alter targeting.
 
 - RimWorld 1.6
 - Harmony
-- Spine
+- SpineLib
 - Save Our Ship 2 and its required Vehicle Framework dependency
 
 ## Installation
 
-Spine is not on the Steam Workshop yet; take a build from
-[coolnether123/Spine](https://github.com/coolnether123/Spine).
+SpineLib is available on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=3778463813); repository builds are at [coolnether123/Spine](https://github.com/coolnether123/Spine).
 
 Copy `SOS2WeaponReadouts` and `Spine` into RimWorld's `Mods` directory, install
 Harmony, Vehicle Framework, and Save Our Ship 2 from their normal sources, and
