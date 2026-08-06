@@ -30,7 +30,12 @@
     <li>CoolNether123.Spine</li>
     <li>kentington.saveourship2</li>
   </loadAfter>
-  <description>Adds the missing per-shot information to Save Our Ship 2 weapons without changing their balance.
+  <description>The per-shot heat and power numbers Save Our Ship 2 does not show.
 
-Built weapons append a compact (+X/shot) value to SOS2's existing network-heat line instead of adding another inspect row. Information cards and placement previews add only details SOS2 does not already show, including connection and capacity warnings.</description>
+- Per-shot heat and electrical draw on a weapon's information card
+- Built weapons append a compact value to the existing network-heat line instead of adding a row
+- Placement previews warn about no thermal network, no ship bridge, or too little capacity for one shot
+- Changes no balance
+
+Requires Save Our Ship 2 and its Vehicle Framework dependency, plus Harmony and Spine.</description>
 </ModMetaData>
