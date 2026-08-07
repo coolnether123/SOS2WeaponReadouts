@@ -12,6 +12,7 @@ namespace SOS2WeaponReadouts.UI
     /// </summary>
     public sealed class WeaponReadoutPlaceWorker : PlaceWorker
     {
+#if SOS2_WEAPON_READOUTS_HAS_PLACEWORKER_ATTACHMENTS
         public override void DrawPlaceMouseAttachments(
             float curX,
             ref float curY,
@@ -58,13 +59,12 @@ namespace SOS2WeaponReadouts.UI
 
             foreach (var line in lines)
             {
-                DrawTextLine(
-                    curX,
-                    ref curY,
-                    warning
-                        ? line.Colorize(ColorLibrary.RedReadable)
-                        : line);
+                Widgets.Label(
+                    new Rect(curX, curY, previewRect.width, Text.LineHeight),
+                    warning ? line.Colorize(ColorLibrary.RedReadable) : line);
+                curY += Text.LineHeight;
             }
         }
+#endif
     }
 }

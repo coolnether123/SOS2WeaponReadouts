@@ -5,9 +5,23 @@
     <AssemblyName>SOS2WeaponReadouts</AssemblyName>
     <RootNamespace>SOS2WeaponReadouts</RootNamespace>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <OutputPath>..\1.6\Assemblies\</OutputPath>
+    <Configurations>1.6;1.5;1.4;1.3;1.2;1.1</Configurations>
+    <DisableImplicitConfigurationDefines>true</DisableImplicitConfigurationDefines>
+    <OutputPath>..\$(Configuration)\Assemblies\</OutputPath>
     <RwtUseHarmony>true</RwtUseHarmony>
     <RwtUseSpine>true</RwtUseSpine>
     <RwtUseUnityImGui>true</RwtUseUnityImGui>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' != '1.6'">
+    <DefineConstants>SOS2_WEAPON_READOUTS_LEGACY_PLACEWORKER;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == '1.3' Or '$(Configuration)' == '1.4' Or '$(Configuration)' == '1.5'">
+    <DefineConstants>SOS2_WEAPON_READOUTS_LEGACY_PLACEWORKER;SOS2_WEAPON_READOUTS_HAS_PLACEWORKER_ATTACHMENTS;TRACE</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)' == '1.1' Or '$(Configuration)' == '1.2'">
+    <DefineConstants>SOS2_WEAPON_READOUTS_LEGACY_PLACEWORKER;SOS2_WEAPON_READOUTS_OLD_STAT_ENTRY;TRACE</DefineConstants>
   </PropertyGroup>
 </Project>

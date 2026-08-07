@@ -88,6 +88,9 @@ namespace SOS2WeaponReadouts.Runtime
         {
             var entries = (existing ?? Enumerable.Empty<StatDrawEntry>())
                 .ToList();
+#if SOS2_WEAPON_READOUTS_OLD_STAT_ENTRY
+            return entries;
+#else
             var settings = SOS2WeaponReadoutsMod.Settings;
             if (settings == null ||
                 !settings.FeatureEnabled ||
@@ -149,6 +152,7 @@ namespace SOS2WeaponReadouts.Runtime
                     exception);
                 return entries;
             }
+#endif
         }
 
         public static string AppendHeatPerShotToInspectString(
