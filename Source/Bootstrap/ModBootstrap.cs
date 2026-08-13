@@ -17,9 +17,10 @@ namespace SOS2WeaponReadouts.Bootstrap
             : base(
                 content,
                 "CoolNether123.SOS2WeaponReadouts",
-                new SemanticVersion(1, 0, 0),
-                SOS2WeaponReadoutsSettingsRegistry.Definitions,
-                SpineCapability.HarmonyPatching,
+                new SemanticVersion(1, 1, 0),
+                SOS2WeaponReadoutsSettingsRegistry.Schema.Definitions,
+                SpineCapability.HarmonyPatching |
+                SpineCapability.SettingsSchema,
                 new ModSettingsPageOptions { RowHeight = 36f })
         {
             WeaponReadoutRuntime.Initialize(content);

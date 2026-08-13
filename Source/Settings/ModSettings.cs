@@ -1,4 +1,3 @@
-using Spine.Api;
 using Verse;
 
 namespace SOS2WeaponReadouts.Settings
@@ -18,9 +17,7 @@ namespace SOS2WeaponReadouts.Settings
 
         public override void ExposeData()
         {
-            SpineApi.Settings.Scribe(
-                this,
-                SOS2WeaponReadoutsSettingsRegistry.Definitions);
+            SOS2WeaponReadoutsSettingsRegistry.Schema.Scribe(this);
             base.ExposeData();
         }
     }
