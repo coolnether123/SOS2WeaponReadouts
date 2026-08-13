@@ -314,6 +314,11 @@ namespace SOS2WeaponReadouts.Compatibility
                 return 0;
             }
 
+            if (!field.IsStatic && instance == null)
+            {
+                return 0;
+            }
+
             object collection = field.GetValue(field.IsStatic ? null : instance);
             if (collection == null)
             {
