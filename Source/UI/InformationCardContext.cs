@@ -48,8 +48,11 @@ namespace SOS2WeaponReadouts.UI
             StatDrawEntry __instance,
             float x,
             float y,
-            float width,
-            string valueCached)
+            float width
+#if SOS2_WEAPON_READOUTS_HAS_STAT_VALUE_CACHE
+            , string valueCached
+#endif
+            )
         {
             if (!InformationCardContext.Contains(__instance))
             {
@@ -57,7 +60,11 @@ namespace SOS2WeaponReadouts.UI
             }
 
             float valueWidth = width * 0.45f;
-            string value = valueCached ?? __instance.ValueString;
+            string value =
+#if SOS2_WEAPON_READOUTS_HAS_STAT_VALUE_CACHE
+                valueCached ??
+#endif
+                __instance.ValueString;
             Rect row = new Rect(
                 8f,
                 y,
