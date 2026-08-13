@@ -23,8 +23,8 @@ namespace SOS2WeaponReadouts.Compatibility
         private readonly PropertyInfo heatCompProps;
         private readonly FieldInfo heatPerPulse;
         private readonly FieldInfo energyToFire;
-        private readonly PropertyInfo networkCapacity;
-        private readonly PropertyInfo networkUsed;
+        private readonly MemberInfo networkCapacity;
+        private readonly MemberInfo networkUsed;
         private readonly FieldInfo pilotConsoles;
         private readonly FieldInfo aiCores;
         private readonly FieldInfo tacticalConsoles;
@@ -32,13 +32,17 @@ namespace SOS2WeaponReadouts.Compatibility
         public Sos2V16Adapter()
         {
             var turretType = Sos2AdapterFactory.FindRequiredType(
-                "SaveOurShip2.Building_ShipTurret");
+                "SaveOurShip2.Building_ShipTurret",
+                "RimWorld.Building_ShipTurret");
             heatCompType = Sos2AdapterFactory.FindRequiredType(
-                "SaveOurShip2.CompShipHeat");
+                "SaveOurShip2.CompShipHeat",
+                "RimWorld.CompShipHeat");
             heatPropsType = Sos2AdapterFactory.FindRequiredType(
-                "SaveOurShip2.CompProps_ShipHeat");
+                "SaveOurShip2.CompProps_ShipHeat",
+                "RimWorld.CompProperties_ShipHeat");
             var heatNetworkType = Sos2AdapterFactory.FindRequiredType(
-                "SaveOurShip2.ShipHeatNet");
+                "SaveOurShip2.ShipHeatNet",
+                "RimWorld.ShipHeatNet");
 
             var bindings = new List<WeaponTypeBinding>
             {
@@ -66,15 +70,15 @@ namespace SOS2WeaponReadouts.Compatibility
             heatPerPulse = RequireField(heatPropsType, "heatPerPulse");
             energyToFire = RequireField(heatPropsType, "energyToFire");
 
-            networkCapacity = RequireProperty(
+            networkCapacity = RequireMember(
                 heatNetworkType,
                 "StorageCapacity");
-            networkUsed = RequireProperty(
+            networkUsed = RequireMember(
                 heatNetworkType,
                 "StorageUsed");
-            pilotConsoles = RequireField(heatNetworkType, "PilCons");
-            aiCores = RequireField(heatNetworkType, "AICores");
-            tacticalConsoles = RequireField(
+            pilotConsoles = FindField(heatNetworkType, "PilCons");
+            aiCores = FindField(heatNetworkType, "AICores");
+            tacticalConsoles = FindField(
                 heatNetworkType,
                 "TacCons");
 
@@ -135,7 +139,9 @@ namespace SOS2WeaponReadouts.Compatibility
                 return false;
             }
 
-            var heatComp = binding.HeatComp.GetValue(building);
+            var heatComp = binding.HeatComp == null
+                ? FindHeatComponent(building as ThingWithComps)
+                : binding.HeatComp.GetValue(building);
             var properties = heatComp == null
                 ? null
                 : heatCompProps.GetValue(heatComp, null);
@@ -161,11 +167,27 @@ namespace SOS2WeaponReadouts.Compatibility
                 Convert.ToInt32(
                     binding.AmplifierCount.GetValue(building)) < 0;
 
-            readout = new WeaponReadout(
-                ReadSingle(binding.HeatToFire, building),
-                ReadSingle(binding.EnergyToFire, building),
-                !hasUnresolvedSpinalAmplifiers,
-                networkReadout);
+            if (binding.HeatToFire != null &&
+                binding.EnergyToFire != null)
+            {
+                readout = new WeaponReadout(
+                    ReadSingle(binding.HeatToFire, building),
+                    ReadSingle(binding.EnergyToFire, building),
+                    !hasUnresolvedSpinalAmplifiers,
+                    networkReadout);
+            }
+            else
+            {
+                var amplifierBonus = binding.AmplifierDamageBonus == null
+                    ? 0f
+                    : ReadSingle(binding.AmplifierDamageBonus, building);
+                readout = ShotCostCalculator.FromPlaced(
+                    ReadSingle(heatPerPulse, properties),
+                    ReadSingle(energyToFire, properties),
+                    amplifierBonus,
+                    !hasUnresolvedSpinalAmplifiers,
+                    networkReadout);
+            }
             return true;
         }
 
@@ -275,13 +297,19 @@ namespace SOS2WeaponReadouts.Compatibility
 
         private bool HasBridge(object network)
         {
-            return ReadCount(pilotConsoles.GetValue(network)) > 0 ||
-                ReadCount(aiCores.GetValue(network)) > 0 ||
-                ReadCount(tacticalConsoles.GetValue(network)) > 0;
+            return ReadCount(pilotConsoles, network) > 0 ||
+                ReadCount(aiCores, network) > 0 ||
+                ReadCount(tacticalConsoles, network) > 0;
         }
 
-        private static int ReadCount(object collection)
+        private static int ReadCount(FieldInfo field, object instance)
         {
+            if (field == null)
+            {
+                return 0;
+            }
+
+            object collection = field.GetValue(instance);
             if (collection == null)
             {
                 return 0;
@@ -295,21 +323,21 @@ namespace SOS2WeaponReadouts.Compatibility
                 : Convert.ToInt32(count.GetValue(collection, null));
         }
 
-        private static float ReadSingle(
-            MemberInfo member,
-            object instance)
+        private static float ReadSingle(MemberInfo member, object instance)
         {
-            object value;
-            if (member is FieldInfo field)
-            {
-                value = field.GetValue(instance);
-            }
-            else
-            {
-                value = ((PropertyInfo)member).GetValue(instance, null);
-            }
+            object value = ReadMember(member, instance);
 
             return Convert.ToSingle(value);
+        }
+
+        private static object ReadMember(MemberInfo member, object instance)
+        {
+            if (member is FieldInfo field)
+            {
+                return field.GetValue(instance);
+            }
+
+            return ((PropertyInfo)member).GetValue(instance, null);
         }
 
         private static bool ReadBoolean(
@@ -342,6 +370,33 @@ namespace SOS2WeaponReadouts.Compatibility
                 throw new MissingMemberException(type.FullName, name);
         }
 
+        private static MemberInfo RequireMember(Type type, string name)
+        {
+            return (MemberInfo)FindField(type, name) ??
+                FindProperty(type, name) ??
+                throw new MissingMemberException(type.FullName, name);
+        }
+
+        private static FieldInfo FindField(Type type, string name)
+        {
+            return type.GetField(
+                name,
+                BindingFlags.Public |
+                BindingFlags.NonPublic |
+                BindingFlags.Instance |
+                BindingFlags.FlattenHierarchy);
+        }
+
+        private static PropertyInfo FindProperty(Type type, string name)
+        {
+            return type.GetProperty(
+                name,
+                BindingFlags.Public |
+                BindingFlags.NonPublic |
+                BindingFlags.Instance |
+                BindingFlags.FlattenHierarchy);
+        }
+
         /// <summary>
         /// Captures the validated member shape for each supported turret family
         /// so hot read paths do not repeat reflection discovery.
@@ -355,7 +410,8 @@ namespace SOS2WeaponReadouts.Compatibility
                 PropertyInfo energyToFire,
                 PropertyInfo connectedToBridge,
                 FieldInfo amplifierCount,
-                FieldInfo spinalComp)
+                FieldInfo spinalComp,
+                FieldInfo amplifierDamageBonus)
             {
                 Type = type;
                 HeatComp = heatComp;
@@ -364,6 +420,7 @@ namespace SOS2WeaponReadouts.Compatibility
                 ConnectedToBridge = connectedToBridge;
                 AmplifierCount = amplifierCount;
                 SpinalComp = spinalComp;
+                AmplifierDamageBonus = amplifierDamageBonus;
             }
 
             public Type Type { get; }
@@ -373,17 +430,19 @@ namespace SOS2WeaponReadouts.Compatibility
             public PropertyInfo ConnectedToBridge { get; }
             public FieldInfo AmplifierCount { get; }
             public FieldInfo SpinalComp { get; }
+            public FieldInfo AmplifierDamageBonus { get; }
 
             public static WeaponTypeBinding CreateSos2(Type type)
             {
                 return new WeaponTypeBinding(
                     type,
-                    RequireField(type, "heatComp"),
-                    RequireProperty(type, "HeatToFire"),
-                    RequireProperty(type, "EnergyToFire"),
-                    RequireProperty(type, "ConnectedToBridge"),
-                    RequireField(type, "AmplifierCount"),
-                    RequireField(type, "spinalComp"));
+                    FindField(type, "heatComp"),
+                    FindProperty(type, "HeatToFire"),
+                    FindProperty(type, "EnergyToFire"),
+                    FindProperty(type, "ConnectedToBridge"),
+                    FindField(type, "AmplifierCount"),
+                    FindField(type, "spinalComp"),
+                    FindField(type, "AmplifierDamageBonus"));
             }
 
             public static WeaponTypeBinding CreateCeSurrogate(Type type)
@@ -393,6 +452,7 @@ namespace SOS2WeaponReadouts.Compatibility
                     RequireField(type, "heatComp"),
                     RequireProperty(type, "HeatToFire"),
                     RequireProperty(type, "EnergyToFire"),
+                    null,
                     null,
                     null,
                     null);

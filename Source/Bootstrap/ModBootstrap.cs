@@ -14,6 +14,15 @@ namespace SOS2WeaponReadouts.Bootstrap
         SpineMod<SOS2WeaponReadoutsSettings>
     {
         public SOS2WeaponReadoutsMod(ModContentPack content)
+#if SOS2_WEAPON_READOUTS_LEGACY_SPINE_SETTINGS
+            : base(
+                content,
+                "CoolNether123.SOS2WeaponReadouts",
+                new SemanticVersion(1, 0, 0),
+                SOS2WeaponReadoutsSettingsRegistry.Definitions,
+                SpineCapability.HarmonyPatching,
+                new ModSettingsPageOptions { RowHeight = 36f })
+#else
             : base(
                 content,
                 "CoolNether123.SOS2WeaponReadouts",
@@ -22,6 +31,7 @@ namespace SOS2WeaponReadouts.Bootstrap
                 SpineCapability.HarmonyPatching |
                 SpineCapability.SettingsSchema,
                 new ModSettingsPageOptions { RowHeight = 36f })
+#endif
         {
             WeaponReadoutRuntime.Initialize(content);
         }

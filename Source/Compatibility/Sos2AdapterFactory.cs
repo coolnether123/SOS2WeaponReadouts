@@ -64,6 +64,20 @@ namespace SOS2WeaponReadouts.Compatibility
             return type;
         }
 
+        internal static Type FindRequiredType(params string[] fullNames)
+        {
+            foreach (var fullName in fullNames ?? new string[0])
+            {
+                var type = FindOptionalType(fullName);
+                if (type != null)
+                {
+                    return type;
+                }
+            }
+
+            throw new TypeLoadException(string.Join(" or ", fullNames ?? new string[0]));
+        }
+
         internal static Type FindOptionalType(string fullName)
         {
             return AppDomain.CurrentDomain

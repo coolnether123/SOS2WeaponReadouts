@@ -1,4 +1,7 @@
 using Verse;
+#if SOS2_WEAPON_READOUTS_LEGACY_SPINE_SETTINGS
+using Spine.Api;
+#endif
 
 namespace SOS2WeaponReadouts.Settings
 {
@@ -17,7 +20,13 @@ namespace SOS2WeaponReadouts.Settings
 
         public override void ExposeData()
         {
+#if SOS2_WEAPON_READOUTS_LEGACY_SPINE_SETTINGS
+            SpineApi.Settings.Scribe(
+                this,
+                SOS2WeaponReadoutsSettingsRegistry.Definitions);
+#else
             SOS2WeaponReadoutsSettingsRegistry.Schema.Scribe(this);
+#endif
             base.ExposeData();
         }
     }
