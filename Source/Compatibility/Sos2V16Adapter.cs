@@ -297,6 +297,11 @@ namespace SOS2WeaponReadouts.Compatibility
 
         private bool HasBridge(object network)
         {
+            if (network == null)
+            {
+                return false;
+            }
+
             return ReadCount(pilotConsoles, network) > 0 ||
                 ReadCount(aiCores, network) > 0 ||
                 ReadCount(tacticalConsoles, network) > 0;
@@ -309,7 +314,7 @@ namespace SOS2WeaponReadouts.Compatibility
                 return 0;
             }
 
-            object collection = field.GetValue(instance);
+            object collection = field.GetValue(field.IsStatic ? null : instance);
             if (collection == null)
             {
                 return 0;
@@ -354,7 +359,8 @@ namespace SOS2WeaponReadouts.Compatibility
                 name,
                 BindingFlags.Public |
                 BindingFlags.NonPublic |
-                BindingFlags.Instance) ??
+                BindingFlags.Instance |
+                BindingFlags.Static) ??
                 throw new MissingMemberException(type.FullName, name);
         }
 

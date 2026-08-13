@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RwtIsRimWorldMod>true</RwtIsRimWorldMod>
+    <TargetFramework>net472</TargetFramework>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>SOS2WeaponReadouts.HistoricalFixture</AssemblyName>
+    <RootNamespace>SOS2WeaponReadouts.HistoricalFixture</RootNamespace>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <Configurations>1.4;1.3;1.2;1.1</Configurations>
+    <DisableImplicitConfigurationDefines>true</DisableImplicitConfigurationDefines>
+    <OutputPath>..\$(Configuration)\Assemblies\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '1.1'"><DefineConstants>SOS2WR_HISTORICAL_1_1;TRACE</DefineConstants></PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '1.2'"><DefineConstants>SOS2WR_HISTORICAL_1_2;TRACE</DefineConstants></PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '1.3'"><DefineConstants>SOS2WR_HISTORICAL_1_3;TRACE</DefineConstants></PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == '1.4'"><DefineConstants>SOS2WR_HISTORICAL_1_4;TRACE</DefineConstants></PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Assembly-CSharp">
+      <HintPath>$(RimWorldManagedDir)\Assembly-CSharp.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+    <Reference Include="UnityEngine.CoreModule">
+      <HintPath>$(RimWorldManagedDir)\UnityEngine.CoreModule.dll</HintPath>
+      <Private>false</Private>
+    </Reference>
+  </ItemGroup>
+</Project>
