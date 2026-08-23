@@ -7,7 +7,7 @@ rest of the mod asks SOS2 questions. `Sos2V16Adapter` validates and caches the
 public 1.6 API members at startup, then returns immutable domain models. SOS2
 types and source are never copied or exposed outside this adapter.
 
-The compiled assembly deliberately has no static reference to
+The compiled assembly has no static reference to
 `ShipsHaveInsides.dll`. This lets the normal mod assembly load even when SOS2
 is missing or incompatible, after which the adapter reports one controlled
 compatibility message and disables integration.
@@ -17,11 +17,11 @@ duplicate detection, number formatting, and line composition. These classes
 are pure C# and covered by the standalone test executable.
 
 `Runtime/WeaponReadoutRuntime.cs` coordinates settings, adapter calls,
-localization, and error isolation. Every runtime entry point is demand-driven:
-definition stats are evaluated when an info card enumerates them, selected
-weapon values are evaluated when SOS2 builds its heat-component inspect text, and placement values are
-evaluated only while its designator is active. No map, world, or per-frame
-component runs while the UI is closed.
+localization, and error handling. It calculates definition stats when an
+information card requests them. It calculates selected-weapon values when
+SOS2 builds the heat-component text, and placement values only while the
+designator is active. No map, world, or per-frame component runs while the UI
+is closed.
 
 `Patches/` contains two narrow Harmony postfixes:
 
@@ -46,9 +46,9 @@ observes firing calls, and writes proof artifacts. The production mod has no
 reference to RimWorld Agent or the fixture. The shared
 `New-RwtReleasePackage` command stages only the explicit `About`,
 `1.6/Assemblies/SOS2WeaponReadouts.dll`, and `Languages` runtime allowlist.
-That mechanically excludes the entire `Developer/` tree, along with source,
-tests, engineering evidence, build logs, symbol files, and nested build
-outputs, from the distributable folder.
+This excludes the entire `Developer/` tree from the package. Source, tests,
+engineering evidence, build logs, symbols, and nested build outputs are also
+excluded.
 
 The fixture advances from `IRimWorldAgentExtension.OnFrame` because SOS2
 rebuilds heat grids in its frame-driven `ShipMapComp.MapComponentUpdate`.

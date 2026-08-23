@@ -13,8 +13,9 @@ Combat Extended's optional SOS2 surrogate turret is supported when CE's
 `SOS2Compat` assembly is present. The adapter discovers that class without a
 hard CE dependency, validates its heat and firing-cost shape, and patches its
 SOS2 heat-component inspect line alongside native SOS2 turrets. Definition
-information and placement readouts use the same shared calculation path. Combat Extended
-must remain after Save Our Ship 2 in the load order, as declared by CE itself.
+information and placement readouts use the same calculation path. Combat
+Extended must remain after Save Our Ship 2 in the load order, as CE itself
+declares.
 
 Future SOS2 releases that add equivalent text are handled semantically: heat,
 electrical, connection, and current network capacity fields are independently
@@ -33,6 +34,6 @@ suppressed when already present.
   pass.
 - The settings window reads status text only while open.
 
-Consequently, the mod adds no work per frame while its UI surfaces are closed.
+The mod therefore adds no work per frame while its UI is closed.
 The frame-driven developer firing fixture is a separately loaded test mod and
 is not present in production profiles or release packages.
