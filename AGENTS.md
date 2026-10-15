@@ -28,4 +28,4 @@ and cleanup flow; cleanup must complete before stopping the lane. Do not add
 fixture or agent code to the shipping assembly, and do not replace the real
 frame-driven SOS2 network fixture with a generic spawned surrogate.
 
-Follow `A:\Dev\RimWorld\AGENTS.md` for shared build/runtime/evidence rules.
+Follow `H:\Dev\RimWorld\AGENTS.md` for shared build/runtime/evidence rules.
